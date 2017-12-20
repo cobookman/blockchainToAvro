@@ -5,9 +5,7 @@ import com.google.BlockToBq.Generated.BitcoinInput;
 import com.google.BlockToBq.Generated.BitcoinOutput;
 import com.google.BlockToBq.Generated.BitcoinTransaction;
 import com.google.BlockToBq.Generated.BitcoinTransaction.Builder;
-import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
-import com.google.cloud.storage.StorageOptions;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -28,8 +26,6 @@ public class Ingestion {
   private AvroFileWriter writer;
 
   public Ingestion(AvroFileWriter avroFileWriter) {
-    // this.bucket = bucket;
-    // this.storage = StorageOptions.getDefaultInstance().getService();
     writer = avroFileWriter;
 
   }
@@ -40,7 +36,11 @@ public class Ingestion {
     public AvroFileWriter(File file) throws IOException {
       DatumWriter<BitcoinTransaction> blockWriter = new SpecificDatumWriter<>(BitcoinTransaction.class);
       dataFileWriter = new DataFileWriter<>(blockWriter);
-      dataFileWriter.create(BitcoinTransaction.getClassSchema(), file);
+      if (file.exists()) {
+        dataFileWriter.appendTo(file);
+      } else {
+        dataFileWriter.create(BitcoinTransaction.getClassSchema(), file);
+      }
     }
 
     public synchronized void write(List<BitcoinTransaction> transactions) throws IOException {
@@ -54,13 +54,7 @@ public class Ingestion {
     }
   }
 
-  // /** Gets the write channel for storing the block in gs://bucket/blockId. */
-  // public WriteChannel getWriteChannel(Block block) {
-  //   BlobInfo blobInfo = BlobInfo.newBuilder(this.bucket, block.getHashAsString() + ".avro").build();
-  //   return this.storage.writer(blobInfo);
-  // }
-
-  public List<BitcoinTransaction> blockToAvro(Block block) {
+  private List<BitcoinTransaction> blockToAvro(Block block) {
     BitcoinBlock.Builder bitcoinBlockBuilder = BitcoinBlock.newBuilder()
         .setBlockId(block.getHashAsString())
         .setPreviousBlock(block.getPrevBlockHash().toString())
@@ -122,17 +116,7 @@ public class Ingestion {
   }
 
   public void onBlock(Block block) throws IOException, StorageException {
-    // // AVRO writers to memory
-    // DatumWriter<BitcoinTransaction> blockWriter = new SpecificDatumWriter<>(BitcoinTransaction.class);
-    // DataFileWriter<BitcoinTransaction> dataFileWriter = new DataFileWriter<>(blockWriter);
-    // ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    // dataFileWriter.create(BitcoinTransaction.getClassSchema(), bout);
-
     List<BitcoinTransaction> transactions = blockToAvro(block);
     writer.write(transactions);
-
-    // dataFileWriter.close();
-    // writer.write(ByteBuffer.wrap(bout.toByteArray()));
-    // writer.close();
   }
 }

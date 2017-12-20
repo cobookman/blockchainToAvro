@@ -4,8 +4,6 @@ import com.google.BlockToBq.DownloadChain.BlockListener;
 import com.google.BlockToBq.Ingestion.AvroFileWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,17 +11,40 @@ import org.bitcoinj.core.Block;
 import org.bitcoinj.store.BlockStoreException;
 
 public class main {
+  private static AvroFileWriter writer;
+  private static ThreadedBqIngestion threadedBqIngestion;
+
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, BlockStoreException {
     File file = new File(args[0]);
-    AvroFileWriter writer = new AvroFileWriter(file);
-    final Ingestion ingestion = new Ingestion(writer);
+    writer = new AvroFileWriter(file);
+    Ingestion ingestion = new Ingestion(writer);
+    threadedBqIngestion = new ThreadedBqIngestion(ingestion);
 
-    ThreadedBqIngestion threadedBqIngestion = new ThreadedBqIngestion(ingestion);
-    DownloadChain downloadChain = new DownloadChain();
-    downloadChain.start(threadedBqIngestion);
-    downloadChain.blockTillDone();
-    System.out.println("Done");
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      try {
+        shutdown();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }));
+
+    while (true) {
+      try {
+        DownloadChain downloadChain = new DownloadChain();
+        downloadChain.start(threadedBqIngestion);
+        downloadChain.blockTillDone();
+        System.out.println("Done");
+        writer.close();
+        return;
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private static void shutdown() throws IOException {
+    threadedBqIngestion.shutdown();
     writer.close();
   }
 
@@ -31,6 +52,9 @@ public class main {
     private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 4);
     private Ingestion ingestion;
 
+    public void shutdown() {
+      executor.shutdown();
+    }
     ThreadedBqIngestion(Ingestion ingestion) {
       this.ingestion = ingestion;
     }
