@@ -27,6 +27,12 @@ public class DownloadChain {
     isDone = new AtomicBoolean(false);
   }
 
+  public void stop() {
+    if (peerGroup != null) {
+      peerGroup.stop();
+    }
+  }
+
   public void start(BlockListener blockListener) throws BlockStoreException, InterruptedException {
     NetworkParameters networkParameters = new MainNetParams();
     Context.getOrCreate(networkParameters);
@@ -36,10 +42,14 @@ public class DownloadChain {
     FullPrunedBlockChain blockChain = new FullPrunedBlockChain(networkParameters, blockStore);
 
     // add peers for downloading block chain
+    stop();
     peerGroup = new PeerGroup(networkParameters, blockChain);
     peerGroup.setUserAgent(agentName, agentVersion);
     peerGroup.addPeerDiscovery(new DnsDiscovery(networkParameters));
     peerGroup.addPeerDiscovery(new SeedPeers(networkParameters));
+    peerGroup.setUserAgent(agentName, agentVersion);
+    peerGroup.setMaxConnections(1000);
+    peerGroup.setConnectTimeoutMillis(5000);
     peerGroup.start();
     peerGroup.startBlockChainDownload(new DownloadProgressTracker() {
       protected void doneDownload() {

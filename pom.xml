@@ -85,7 +85,7 @@
 
           <archive>
             <manifest>
-              <mainClass>com.google.BlockToBq.main</mainClass>
+              <mainClass>com.google.BlockToBq.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
