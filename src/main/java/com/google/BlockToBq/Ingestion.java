@@ -98,9 +98,13 @@ public class Ingestion {
         }
 
         if (tIn.isCoinBase()) {
-          inputBuilder.setPubkey(null);
+          inputBuilder.setPubkey("");
         } else {
-          inputBuilder.setPubkey(tIn.getFromAddress().toBase58());
+          try {
+            inputBuilder.setPubkey(tIn.getFromAddress().toBase58());
+          } catch (ScriptException e) {
+            inputBuilder.setPubkey("");
+          }
         }
 
         inputBuilder.setSequenceNumber(tIn.getSequenceNumber());
@@ -121,7 +125,11 @@ public class Ingestion {
           output.setScriptString("");
         }
 
-        output.setPubkey(tOut.getScriptPubKey().getToAddress(params).toBase58());
+        try {
+          output.setPubkey(tOut.getScriptPubKey().getToAddress(params).toBase58());
+        } catch (ScriptException e) {
+          output.setPubkey("");
+        }
 
         return output.build();
       }).collect(Collectors.toList()));
