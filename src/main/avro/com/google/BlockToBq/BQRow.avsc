@@ -20,7 +20,8 @@
   "fields": [
     {"name": "script_bytes", "type": "bytes"},
     {"name": "script_string", "type": "string"},
-    {"name": "sequence_number", "type": "long"}
+    {"name": "sequence_number", "type": "long"},
+    {"name": "pubkey", "type": "string"}
   ]
 },
 {
@@ -30,7 +31,8 @@
   "fields": [
     {"name": "satoshis", "type": "long"},
     {"name": "script_bytes", "type": "bytes"},
-    {"name": "script_string", "type": "string"}
+    {"name": "script_string", "type": "string"},
+    {"name": "pubkey", "type": "string"}
   ]
 },
 {
