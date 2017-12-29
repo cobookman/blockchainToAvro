@@ -147,10 +147,10 @@ public class Ingestion {
     Schema schema = transactions.get(0).getSchema();
     final DatumWriter<Object> jsonWriter = new GenericDatumWriter<Object>(schema);
     final JsonEncoder jsonEncoder = EncoderFactory.get().jsonEncoder(schema, System.out);
-    for (BitcoinTransaction t : transactions) {
-      jsonWriter.write(t, jsonEncoder);
-    }
-    jsonEncoder.flush();
-    System.out.println();
+    //for (BitcoinTransaction t : transactions) {
+    //  jsonWriter.write(t, jsonEncoder);
+    //}
+    //jsonEncoder.flush();
+    //System.out.println();
   }
 }
