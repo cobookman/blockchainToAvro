@@ -12,12 +12,16 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileWriter;
+import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.io.DatumWriter;
+import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.bitcoinj.core.Block;
-import org.bitcoinj.core.ScriptException;
-import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.*;
+import org.bitcoinj.params.MainNetParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +59,8 @@ public class Ingestion {
   }
 
   private List<BitcoinTransaction> blockToAvro(Block block) {
+    NetworkParameters params = new MainNetParams();
+
     BitcoinBlock.Builder bitcoinBlockBuilder = BitcoinBlock.newBuilder()
         .setBlockId(block.getHashAsString())
         .setPreviousBlock(block.getPrevBlockHash().toString())
@@ -91,6 +97,12 @@ public class Ingestion {
           inputBuilder.setScriptString("");
         }
 
+        if (tIn.isCoinBase()) {
+          inputBuilder.setPubkey(null);
+        } else {
+          inputBuilder.setPubkey(tIn.getFromAddress().toBase58());
+        }
+
         inputBuilder.setSequenceNumber(tIn.getSequenceNumber());
         return inputBuilder.build();
       }).collect(Collectors.toList()));
@@ -108,15 +120,29 @@ public class Ingestion {
         } catch (ScriptException e) {
           output.setScriptString("");
         }
+
+        output.setPubkey(tOut.getScriptPubKey().getToAddress(params).toBase58());
+
         return output.build();
       }).collect(Collectors.toList()));
       return rowBuilder.build();
     }).collect(Collectors.toList());
+    
+
+
     return out;
   }
 
   public void onBlock(Block block) throws IOException, StorageException {
     List<BitcoinTransaction> transactions = blockToAvro(block);
     writer.write(transactions);
+    Schema schema = transactions.get(0).getSchema();
+    final DatumWriter<Object> jsonWriter = new GenericDatumWriter<Object>(schema);
+    final JsonEncoder jsonEncoder = EncoderFactory.get().jsonEncoder(schema, System.out);
+    for (BitcoinTransaction t : transactions) {
+      jsonWriter.write(t, jsonEncoder);
+    }
+    jsonEncoder.flush();
+    System.out.println();
   }
 }
