@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -6172084288968257226L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"BitcoinInput\",\"namespace\":\"com.google.BlockToBq.Generated\",\"fields\":[{\"name\":\"script_bytes\",\"type\":\"bytes\"},{\"name\":\"script_string\",\"type\":\"string\"},{\"name\":\"sequence_number\",\"type\":\"long\"}]}");
+  private static final long serialVersionUID = -5328603051075280397L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"BitcoinInput\",\"namespace\":\"com.google.BlockToBq.Generated\",\"fields\":[{\"name\":\"script_bytes\",\"type\":\"bytes\"},{\"name\":\"script_string\",\"type\":\"string\"},{\"name\":\"sequence_number\",\"type\":\"long\"},{\"name\":\"pubkey\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -54,6 +54,7 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
   @Deprecated public java.nio.ByteBuffer script_bytes;
   @Deprecated public java.lang.CharSequence script_string;
   @Deprecated public long sequence_number;
+  @Deprecated public java.lang.CharSequence pubkey;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -67,11 +68,13 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
    * @param script_bytes The new value for script_bytes
    * @param script_string The new value for script_string
    * @param sequence_number The new value for sequence_number
+   * @param pubkey The new value for pubkey
    */
-  public BitcoinInput(java.nio.ByteBuffer script_bytes, java.lang.CharSequence script_string, java.lang.Long sequence_number) {
+  public BitcoinInput(java.nio.ByteBuffer script_bytes, java.lang.CharSequence script_string, java.lang.Long sequence_number, java.lang.CharSequence pubkey) {
     this.script_bytes = script_bytes;
     this.script_string = script_string;
     this.sequence_number = sequence_number;
+    this.pubkey = pubkey;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -81,6 +84,7 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
     case 0: return script_bytes;
     case 1: return script_string;
     case 2: return sequence_number;
+    case 3: return pubkey;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -92,6 +96,7 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
     case 0: script_bytes = (java.nio.ByteBuffer)value$; break;
     case 1: script_string = (java.lang.CharSequence)value$; break;
     case 2: sequence_number = (java.lang.Long)value$; break;
+    case 3: pubkey = (java.lang.CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -145,6 +150,22 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
   }
 
   /**
+   * Gets the value of the 'pubkey' field.
+   * @return The value of the 'pubkey' field.
+   */
+  public java.lang.CharSequence getPubkey() {
+    return pubkey;
+  }
+
+  /**
+   * Sets the value of the 'pubkey' field.
+   * @param value the value to set.
+   */
+  public void setPubkey(java.lang.CharSequence value) {
+    this.pubkey = value;
+  }
+
+  /**
    * Creates a new BitcoinInput RecordBuilder.
    * @return A new BitcoinInput RecordBuilder
    */
@@ -179,6 +200,7 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
     private java.nio.ByteBuffer script_bytes;
     private java.lang.CharSequence script_string;
     private long sequence_number;
+    private java.lang.CharSequence pubkey;
 
     /** Creates a new Builder */
     private Builder() {
@@ -203,6 +225,10 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
         this.sequence_number = data().deepCopy(fields()[2].schema(), other.sequence_number);
         fieldSetFlags()[2] = true;
       }
+      if (isValidValue(fields()[3], other.pubkey)) {
+        this.pubkey = data().deepCopy(fields()[3].schema(), other.pubkey);
+        fieldSetFlags()[3] = true;
+      }
     }
 
     /**
@@ -222,6 +248,10 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
       if (isValidValue(fields()[2], other.sequence_number)) {
         this.sequence_number = data().deepCopy(fields()[2].schema(), other.sequence_number);
         fieldSetFlags()[2] = true;
+      }
+      if (isValidValue(fields()[3], other.pubkey)) {
+        this.pubkey = data().deepCopy(fields()[3].schema(), other.pubkey);
+        fieldSetFlags()[3] = true;
       }
     }
 
@@ -341,6 +371,45 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
       return this;
     }
 
+    /**
+      * Gets the value of the 'pubkey' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getPubkey() {
+      return pubkey;
+    }
+
+    /**
+      * Sets the value of the 'pubkey' field.
+      * @param value The value of 'pubkey'.
+      * @return This builder.
+      */
+    public com.google.BlockToBq.Generated.BitcoinInput.Builder setPubkey(java.lang.CharSequence value) {
+      validate(fields()[3], value);
+      this.pubkey = value;
+      fieldSetFlags()[3] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'pubkey' field has been set.
+      * @return True if the 'pubkey' field has been set, false otherwise.
+      */
+    public boolean hasPubkey() {
+      return fieldSetFlags()[3];
+    }
+
+
+    /**
+      * Clears the value of the 'pubkey' field.
+      * @return This builder.
+      */
+    public com.google.BlockToBq.Generated.BitcoinInput.Builder clearPubkey() {
+      pubkey = null;
+      fieldSetFlags()[3] = false;
+      return this;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public BitcoinInput build() {
@@ -349,6 +418,7 @@ public class BitcoinInput extends org.apache.avro.specific.SpecificRecordBase im
         record.script_bytes = fieldSetFlags()[0] ? this.script_bytes : (java.nio.ByteBuffer) defaultValue(fields()[0]);
         record.script_string = fieldSetFlags()[1] ? this.script_string : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.sequence_number = fieldSetFlags()[2] ? this.sequence_number : (java.lang.Long) defaultValue(fields()[2]);
+        record.pubkey = fieldSetFlags()[3] ? this.pubkey : (java.lang.CharSequence) defaultValue(fields()[3]);
         return record;
       } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);
