@@ -94,7 +94,8 @@ public class Ingestion {
         try {
           inputBuilder.setScriptString(tIn.getScriptSig().toString());
         } catch (ScriptException e) {
-          inputBuilder.setScriptString("");
+          inputBuilder.setScriptString(""); //TODO null instead?
+	  inputBuilder.setEtlNotes("Exception:ScriptException:1");
         }
 
         if (tIn.isCoinBase()) {
@@ -103,7 +104,8 @@ public class Ingestion {
           try {
             inputBuilder.setPubkey(tIn.getFromAddress().toBase58());
           } catch (ScriptException e) {
-            inputBuilder.setPubkey("");
+            inputBuilder.setPubkey(""); //TODO null instead?
+            inputBuilder.setEtlNotes("Exception:ScriptException:2");
           }
         }
 
@@ -116,19 +118,22 @@ public class Ingestion {
         if (tOut.getValue() != null) {
           output.setSatoshis(tOut.getValue().getValue());
         } else {
-          output.setSatoshis(-1L);
+          output.setSatoshis(-1L); //TODO set to null, update schema
+          output.setEtlNotes("Exception:null value for satoshis");
         }
         output.setScriptBytes(ByteBuffer.wrap(tOut.getScriptBytes()));
         try {
           output.setScriptString(tOut.getScriptPubKey().toString());
         } catch (ScriptException e) {
-          output.setScriptString("");
+          output.setScriptString(""); //TODO null instead?
+          output.setEtlNotes("Exception:ScriptException:3");
         }
 
         try {
           output.setPubkey(tOut.getScriptPubKey().getToAddress(params).toBase58());
         } catch (ScriptException e) {
-          output.setPubkey("");
+          output.setPubkey(""); //TODO null instead?
+          output.setEtlNotes("Exception:ScriptException:4");
         }
 
         return output.build();
@@ -136,8 +141,6 @@ public class Ingestion {
       return rowBuilder.build();
     }).collect(Collectors.toList());
     
-
-
     return out;
   }
 
