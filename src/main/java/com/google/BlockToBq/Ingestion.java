@@ -94,7 +94,7 @@ public class Ingestion {
         try {
           inputBuilder.setScriptString(tIn.getScriptSig().toString());
         } catch (ScriptException e) {
-          inputBuilder.setScriptString("");
+          inputBuilder.setScriptString("Exception:ScriptException:1");
         }
 
         if (tIn.isCoinBase()) {
@@ -103,7 +103,7 @@ public class Ingestion {
           try {
             inputBuilder.setPubkey(tIn.getFromAddress().toBase58());
           } catch (ScriptException e) {
-            inputBuilder.setPubkey("");
+            inputBuilder.setPubkey("Exception:ScriptException:2");
           }
         }
 
@@ -122,13 +122,13 @@ public class Ingestion {
         try {
           output.setScriptString(tOut.getScriptPubKey().toString());
         } catch (ScriptException e) {
-          output.setScriptString("");
+          output.setScriptString("Exception:ScriptException:3");
         }
 
         try {
           output.setPubkey(tOut.getScriptPubKey().getToAddress(params).toBase58());
         } catch (ScriptException e) {
-          output.setPubkey("");
+          output.setPubkey("Exception:ScriptException:4");
         }
 
         return output.build();
@@ -136,8 +136,6 @@ public class Ingestion {
       return rowBuilder.build();
     }).collect(Collectors.toList());
     
-
-
     return out;
   }
 
