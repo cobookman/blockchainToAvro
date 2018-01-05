@@ -1,7 +1,41 @@
 [{
-  "namespace": "com.google.BlockToBq.Generated",
+  "namespace": "com.google.blockToBq.generated",
   "type": "record",
-  "name": "BitcoinBlock",
+  "name": "AvroBitcoinInput",
+  "fields": [
+    {"name": "script_bytes", "type": "bytes"},
+    {"name": "script_string", "type": ["string", "null"]},
+    {"name": "script_string_error", "type": ["string", "null"]},
+    {"name": "sequence_number", "type": "long"},
+    {"name": "pubkey_base58", "type": ["string", "null"]},
+    {"name": "pubkey_base58_error", "type": ["string", "null"]}
+  ]
+},
+{
+  "namespace": "com.google.blockToBq.generated",
+  "type": "record",
+  "name": "AvroBitcoinOutput",
+  "fields": [
+    {"name": "satoshis", "type": ["long", "null"]},
+    {"name": "script_bytes", "type": "bytes"},
+    {"name": "script_string", "type": ["string", "null"]},
+    {"name": "script_string_error", "type": ["string", "null"]},
+    {"name": "pubkey_base58", "type": ["string", "null"]},
+    {"name": "pubkey_base58_error", "type": ["string", "null"]}
+  ]
+}, {
+  "namespace": "com.google.blockToBq.generated",
+  "type": "record",
+  "name": "AvroBitcoinTransaction",
+  "fields": [
+    {"name": "transaction_id", "type": "string"},
+    {"name": "inputs", "type": {"type": "array", "items": "AvroBitcoinInput"}},
+    {"name": "outputs", "type": {"type": "array", "items": "AvroBitcoinOutput"}}
+  ]
+}, {
+  "namespace": "com.google.blockToBq.generated",
+  "type": "record",
+  "name": "AvroBitcoinBlock",
   "fields": [
     {"name": "block_id", "type": "string"},
     {"name": "previous_block", "type": "string"},
@@ -10,43 +44,9 @@
     {"name": "difficulty", "type": "long"},
     {"name": "nonce", "type": "long"},
     {"name": "version", "type": "long"},
-    {"name": "work", "type": "long"},
-    {"name": "etl_notes", "type": [ "string", "null" ], "default": "null"}
-  ]
-},
-{
-  "namespace": "com.google.BlockToBq.Generated",
-  "type": "record",
-  "name": "BitcoinInput",
-  "fields": [
-    {"name": "script_bytes", "type": "bytes"},
-    {"name": "script_string", "type": "string"},
-    {"name": "sequence_number", "type": "long"},
-    {"name": "pubkey", "type": "string"},
-    {"name": "etl_notes", "type": [ "string", "null" ], "default": "null"}
-  ]
-},
-{
-  "namespace": "com.google.BlockToBq.Generated",
-  "type": "record",
-  "name": "BitcoinOutput",
-  "fields": [
-    {"name": "satoshis", "type": "long"},
-    {"name": "script_bytes", "type": "bytes"},
-    {"name": "script_string", "type": "string"},
-    {"name": "pubkey", "type": "string"},
-    {"name": "etl_notes", "type": [ "string", "null" ], "default": "null"}
-  ]
-},
-{
-  "namespace": "com.google.BlockToBq.Generated",
-  "type": "record",
-  "name": "BitcoinTransaction",
-  "fields": [
-    {"name": "transaction_id", "type": "string"},
-    {"name": "block", "type": "BitcoinBlock"},
-    {"name": "inputs", "type": {"type": "array", "items": "BitcoinInput"}},
-    {"name": "outputs", "type": {"type": "array", "items": "BitcoinOutput"}},
-    {"name": "etl_notes", "type": [ "string", "null" ], "default": "null"}
+    {"name": "work", "type": ["long", "null"]},
+    {"name": "work_error", "type": ["string", "null"]},
+    {"name": "height", "type": "int"},
+    {"name": "transactions", "type": {"type": "array", "items": "AvroBitcoinTransaction"}}
   ]
 }]
