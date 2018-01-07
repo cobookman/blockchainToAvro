@@ -5,10 +5,10 @@
   "fields": [
     {"name": "script_bytes", "type": "bytes"},
     {"name": "script_string", "type": ["string", "null"]},
-    {"name": "script_string_error", "type": ["string", "null"]},
+    {"name": "script_string_error", "type": ["string", "null"], "default": "null"},
     {"name": "sequence_number", "type": "long"},
     {"name": "pubkey_base58", "type": ["string", "null"]},
-    {"name": "pubkey_base58_error", "type": ["string", "null"]}
+    {"name": "pubkey_base58_error", "type": ["string", "null"], "default": "null"}
   ]
 },
 {
@@ -19,9 +19,9 @@
     {"name": "satoshis", "type": ["long", "null"]},
     {"name": "script_bytes", "type": "bytes"},
     {"name": "script_string", "type": ["string", "null"]},
-    {"name": "script_string_error", "type": ["string", "null"]},
+    {"name": "script_string_error", "type": ["string", "null"], "default": "null"},
     {"name": "pubkey_base58", "type": ["string", "null"]},
-    {"name": "pubkey_base58_error", "type": ["string", "null"]}
+    {"name": "pubkey_base58_error", "type": ["string", "null"], "default": "null"}
   ]
 }, {
   "namespace": "com.google.blockToBq.generated",
@@ -45,8 +45,8 @@
     {"name": "nonce", "type": "long"},
     {"name": "version", "type": "long"},
     {"name": "work", "type": ["long", "null"]},
-    {"name": "work_error", "type": ["string", "null"]},
-    {"name": "height", "type": "int"},
+    {"name": "work_error", "type": ["string", "null"], "default": "null"},
+    {"name": "height", "type": "int", "default": -1},
     {"name": "transactions", "type": {"type": "array", "items": "AvroBitcoinTransaction"}}
   ]
 }]
