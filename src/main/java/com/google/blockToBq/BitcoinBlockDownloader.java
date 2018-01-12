@@ -13,11 +13,10 @@ import org.bitcoinj.core.PeerGroup;
 import org.bitcoinj.core.listeners.DownloadProgressTracker;
 import org.bitcoinj.net.discovery.DnsDiscovery;
 import org.bitcoinj.net.discovery.SeedPeers;
-import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.store.LevelDBFullPrunedBlockStore;
 
-public class Downloader {
+public class BitcoinBlockDownloader {
   /** Name used to identify ourselves to blockchain network. */
   public static final String AGENT_NAME = "BlockchainToBq";
 
@@ -33,9 +32,10 @@ public class Downloader {
   private AtomicBoolean isDone;
   private PeerGroup peerGroup;
 
-  /** Instantiate a new Downloader instance. */
-  public Downloader() {
+  /** Instantiate a new BitcoinBlockDownloader instance. */
+  public BitcoinBlockDownloader() {
     isDone = new AtomicBoolean(false);
+
   }
 
   /** Blocks until the download of the blockchain is stopped, and peers disconnected. */
@@ -54,7 +54,7 @@ public class Downloader {
 
     // Validate the chain we're downloading, vs assuming incoming blocks are valid
     LevelDBFullPrunedBlockStore blockStore = new LevelDBFullPrunedBlockStore(
-        networkParameters, ".data/", Integer.MAX_VALUE);
+        networkParameters, "blockdb/", Integer.MAX_VALUE);
     FullPrunedBlockChain blockChain = new FullPrunedBlockChain(networkParameters, blockStore);
 
     // configure what peers we connect to
@@ -69,7 +69,8 @@ public class Downloader {
     // attach listener for newly downloaded blockchain blocks
     peerGroup.addBlocksDownloadedEventListener((Peer peer, Block block,
         @Nullable FilteredBlock filteredBlock, int i) -> {
-      blockListener.onBlock(block);
+      long blockHeight = peer.getBestHeight() - i;
+      blockListener.onBlock(blockHeight, block);
     });
 
     // download the chain
@@ -82,9 +83,9 @@ public class Downloader {
     });
   }
 
-  /** Interface for callback used in {@link #start(BlockListener)}. */
+  /** Interface for callback used in {@link #start(NetworkParameters, BlockListener)}. */
   public interface BlockListener {
-    void onBlock(Block block);
+    void onBlock(long blockHeight, Block block);
   }
 
   /** Informs you if blockchain download is finished. */

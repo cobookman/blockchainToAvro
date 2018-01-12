@@ -11,23 +11,23 @@ import org.slf4j.LoggerFactory;
 
 public class Main {
   private static AvroWriter writer;
-  private static BlockHandler blockHandler;
-  private static Downloader downloader;
+  private static BitcoinBlockHandler bitcoinBlockHandler;
+  private static BitcoinBlockDownloader bitcoinBlockDownloader;
   private static final Logger log = LoggerFactory.getLogger(Main.class);
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, BlockStoreException {
+
     attachShutdownListener();
     NetworkParameters networkParameters = new MainNetParams();
 
-    File file = new File(args[0]);
-    writer = new AvroWriter(file);
-    blockHandler = new BlockHandler(writer);
-    downloader = new Downloader();
-    downloader.start(networkParameters, blockHandler);
-
+    String filePrefix = System.getProperty("user.dir") + "/";
+    writer = new AvroWriter(filePrefix);
+    bitcoinBlockHandler = new BitcoinBlockHandler(writer);
+    bitcoinBlockDownloader = new BitcoinBlockDownloader();
+    bitcoinBlockDownloader.start(networkParameters, bitcoinBlockHandler);
     while (true) {
-      if (downloader.isDone()) {
+      if (bitcoinBlockDownloader.isDone()) {
         System.out.println("Done Downloading");
         shutdown();
       } else {
@@ -48,15 +48,15 @@ public class Main {
 
   private static void shutdown() throws IOException, InterruptedException {
     System.out.println("shutting down");
-    if (downloader != null) {
+    if (bitcoinBlockDownloader != null) {
       System.out.println("download of blockchain:\tstopping");
-      downloader.stop();
+      bitcoinBlockDownloader.stop();
       System.out.println("download of blockchain:\tstopped");
     }
 
-    if (blockHandler != null) {
+    if (bitcoinBlockHandler != null) {
       System.out.println("block queue:\tfinishing");
-      blockHandler.stop();
+      bitcoinBlockHandler.stop();
       System.out.println("block queue:\tfinished");
     }
 

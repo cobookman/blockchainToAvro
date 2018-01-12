@@ -18,25 +18,25 @@ import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.params.MainNetParams;
 
-public class BlockHandler implements Downloader.BlockListener {
+public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener {
   public final int WRITE_RETRIES = 3;
   public final int NUM_WORKERS = Runtime.getRuntime().availableProcessors() * 4;
   private AvroWriter writer;
   private ExecutorService executor;
 
-  public BlockHandler(AvroWriter writer) {
+  public BitcoinBlockHandler(AvroWriter writer) {
     this.writer = writer;
     this.executor = Executors.newFixedThreadPool(NUM_WORKERS);
   }
 
   /** Called whenver a new block is downloaded. */
-  public void onBlock(Block block) {
-    executor.execute(() -> processBlock(block));
+  public void onBlock(long blockHeight, Block block) {
+    executor.execute(() -> processBlock(blockHeight, block));
   }
 
   /** Handles the processing of new blocks. */
-  private void processBlock(Block block) {
-    AvroBitcoinBlock avroBlock = convertBlockToAvro(block);
+  private void processBlock(long blockHeight, Block block) {
+    AvroBitcoinBlock avroBlock = convertBlockToAvro(blockHeight, block);
 
     IOException ioException = null;
     for (int i = 0; i < WRITE_RETRIES; ++i) {
@@ -58,7 +58,7 @@ public class BlockHandler implements Downloader.BlockListener {
   }
 
   /** Converts a Bitcoinj Block to Avro representation. */
-  public static AvroBitcoinBlock convertBlockToAvro(Block block) {
+  public static AvroBitcoinBlock convertBlockToAvro(long blockHeight, Block block) {
     AvroBitcoinBlock.Builder blockBuilder = AvroBitcoinBlock.newBuilder()
         .setBlockId(block.getHashAsString())
         .setPreviousBlock(block.getPrevBlockHash().toString())
@@ -66,7 +66,8 @@ public class BlockHandler implements Downloader.BlockListener {
         .setTimestamp(block.getTime().getTime())
         .setDifficulty(block.getDifficultyTarget())
         .setNonce(block.getNonce())
-        .setVersion(block.getVersion());
+        .setVersion(block.getVersion())
+        .setHeight(blockHeight);
 
     try {
       blockBuilder.setWork(block.getWork().longValueExact());
@@ -79,7 +80,7 @@ public class BlockHandler implements Downloader.BlockListener {
       blockBuilder.setTransactions(new ArrayList<>());
     } else {
       blockBuilder.setTransactions(block.getTransactions().stream()
-          .map(BlockHandler::convertTransctionToAvro)
+          .map(BitcoinBlockHandler::convertTransctionToAvro)
           .collect(Collectors.toList()));
     }
 
@@ -92,11 +93,11 @@ public class BlockHandler implements Downloader.BlockListener {
     transactionBuilder.setTransactionId(transaction.getHashAsString());
 
     transactionBuilder.setInputs(transaction.getInputs().stream()
-        .map(BlockHandler::convertInputToAvro)
+        .map(BitcoinBlockHandler::convertInputToAvro)
         .collect(Collectors.toList()));
 
     transactionBuilder.setOutputs(transaction.getOutputs().stream()
-        .map(BlockHandler::convertOutputToAvro)
+        .map(BitcoinBlockHandler::convertOutputToAvro)
         .collect(Collectors.toList()));
 
     return transactionBuilder.build();
