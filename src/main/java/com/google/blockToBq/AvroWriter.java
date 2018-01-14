@@ -1,10 +1,10 @@
 package com.google.blockToBq;
 
 import com.google.blockToBq.generated.AvroBitcoinBlock;
+import com.google.common.base.Strings;
 import java.io.File;
 import java.io.IOException;
 
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -20,11 +20,13 @@ import org.slf4j.LoggerFactory;
 public class AvroWriter {
   private static final Logger log = LoggerFactory.getLogger(AvroWriter.class);
   private DataFileWriter<AvroBitcoinBlock> writer;
-  private int currentHour;
+  private int timeWindowId;
   private String directory;
+  private String scriptPath;
 
-  public AvroWriter(String directory) throws IOException {
+  public AvroWriter(String directory, String scriptPath) throws IOException {
     this.directory = directory;
+    this.scriptPath = scriptPath;
     rotateFile();
   }
 
@@ -46,25 +48,34 @@ public class AvroWriter {
 
       // move old file to 'done' folder
       DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.ss");
-      Date date = new Date();
+      String newPath = this.directory + "done/" + dateFormat.format(new Date()) + ".avro";
       Files.move(
           Paths.get(tempFile.getAbsolutePath()),
-          Paths.get(this.directory + "done/" + dateFormat.format(date) + ".avro"));
+          Paths.get(newPath));
+
+      // call on blockScript (if not null)
+      if (!Strings.isNullOrEmpty(scriptPath)) {
+        try {
+          new ProcessBuilder(scriptPath, newPath).start();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
 
     DatumWriter<AvroBitcoinBlock> blockWriter = new SpecificDatumWriter<>(AvroBitcoinBlock.class);
     this.writer = new DataFileWriter<>(blockWriter);
     writer.create(AvroBitcoinBlock.getClassSchema(), tempFile);
-    currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+    timeWindowId = getCurrentTimeWindowId();
   }
 
-  private boolean needsFileRotation() {
-    return currentHour != Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+  public int getCurrentTimeWindowId() {
+    return (Calendar.getInstance().get(Calendar.MINUTE) / 15);
   }
 
   /** Writes a {@link AvroBitcoinBlock}. */
   public synchronized void write(AvroBitcoinBlock bitcoinBlock) throws IOException {
-    if (needsFileRotation()) {
+    if (timeWindowId != getCurrentTimeWindowId()) {
       rotateFile();
     }
 
