@@ -4,11 +4,11 @@
   "name": "AvroBitcoinInput",
   "fields": [
     {"name": "script_bytes", "type": "bytes"},
-    {"name": "script_string", "type": ["string", "null"]},
-    {"name": "script_string_error", "type": ["string", "null"]},
+    {"name": "script_string", "type": ["null", "string"], "default": null},
+    {"name": "script_string_error", "type": ["null", "string"], "default": null},
     {"name": "sequence_number", "type": "long"},
-    {"name": "pubkey_base58", "type": ["string", "null"]},
-    {"name": "pubkey_base58_error", "type": ["string", "null"]}
+    {"name": "pubkey_base58", "type": ["null", "string"], "default": null},
+    {"name": "pubkey_base58_error", "type": ["null", "string"], "default": null}
   ]
 },
 {
@@ -18,10 +18,10 @@
   "fields": [
     {"name": "satoshis", "type": ["long", "null"]},
     {"name": "script_bytes", "type": "bytes"},
-    {"name": "script_string", "type": ["string", "null"]},
-    {"name": "script_string_error", "type": ["string", "null"]},
-    {"name": "pubkey_base58", "type": ["string", "null"]},
-    {"name": "pubkey_base58_error", "type": ["string", "null"]}
+    {"name": "script_string", "type": ["null", "string"], "default": null},
+    {"name": "script_string_error", "type": ["null", "string"], "default": null},
+    {"name": "pubkey_base58", "type": ["null", "string"], "default": null},
+    {"name": "pubkey_base58_error", "type": ["null", "string"], "default": null}
   ]
 }, {
   "namespace": "com.google.blockToBq.generated",
@@ -44,9 +44,9 @@
     {"name": "difficulty", "type": "long"},
     {"name": "nonce", "type": "long"},
     {"name": "version", "type": "long"},
-    {"name": "work", "type": ["long", "null"]},
-    {"name": "work_error", "type": ["string", "null"]},
-    {"name": "height", "type": "int"},
+    {"name": "height", "type": "long"},
+    {"name": "work", "type": ["null", "long"], "default": null},
+    {"name": "work_error", "type": ["null", "string"], "default": null},
     {"name": "transactions", "type": {"type": "array", "items": "AvroBitcoinTransaction"}}
   ]
 }]

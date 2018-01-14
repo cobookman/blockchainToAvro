@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 3166889701287631934L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroBitcoinBlock\",\"namespace\":\"com.google.blockToBq.generated\",\"fields\":[{\"name\":\"block_id\",\"type\":\"string\"},{\"name\":\"previous_block\",\"type\":\"string\"},{\"name\":\"merkle_root\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":\"long\"},{\"name\":\"difficulty\",\"type\":\"long\"},{\"name\":\"nonce\",\"type\":\"long\"},{\"name\":\"version\",\"type\":\"long\"},{\"name\":\"work\",\"type\":[\"long\",\"null\"]},{\"name\":\"work_error\",\"type\":[\"string\",\"null\"]},{\"name\":\"height\",\"type\":\"int\"},{\"name\":\"transactions\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroBitcoinTransaction\",\"fields\":[{\"name\":\"transaction_id\",\"type\":\"string\"},{\"name\":\"inputs\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroBitcoinInput\",\"fields\":[{\"name\":\"script_bytes\",\"type\":\"bytes\"},{\"name\":\"script_string\",\"type\":[\"string\",\"null\"]},{\"name\":\"script_string_error\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":\"long\"},{\"name\":\"pubkey_base58\",\"type\":[\"string\",\"null\"]},{\"name\":\"pubkey_base58_error\",\"type\":[\"string\",\"null\"]}]}}},{\"name\":\"outputs\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroBitcoinOutput\",\"fields\":[{\"name\":\"satoshis\",\"type\":[\"long\",\"null\"]},{\"name\":\"script_bytes\",\"type\":\"bytes\"},{\"name\":\"script_string\",\"type\":[\"string\",\"null\"]},{\"name\":\"script_string_error\",\"type\":[\"string\",\"null\"]},{\"name\":\"pubkey_base58\",\"type\":[\"string\",\"null\"]},{\"name\":\"pubkey_base58_error\",\"type\":[\"string\",\"null\"]}]}}}]}}}]}");
+  private static final long serialVersionUID = 2518884201407965025L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroBitcoinBlock\",\"namespace\":\"com.google.blockToBq.generated\",\"fields\":[{\"name\":\"block_id\",\"type\":\"string\"},{\"name\":\"previous_block\",\"type\":\"string\"},{\"name\":\"merkle_root\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":\"long\"},{\"name\":\"difficulty\",\"type\":\"long\"},{\"name\":\"nonce\",\"type\":\"long\"},{\"name\":\"version\",\"type\":\"long\"},{\"name\":\"height\",\"type\":\"long\"},{\"name\":\"work\",\"type\":[\"null\",\"long\"],\"default\":null},{\"name\":\"work_error\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"transactions\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroBitcoinTransaction\",\"fields\":[{\"name\":\"transaction_id\",\"type\":\"string\"},{\"name\":\"inputs\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroBitcoinInput\",\"fields\":[{\"name\":\"script_bytes\",\"type\":\"bytes\"},{\"name\":\"script_string\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"script_string_error\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"sequence_number\",\"type\":\"long\"},{\"name\":\"pubkey_base58\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"pubkey_base58_error\",\"type\":[\"null\",\"string\"],\"default\":null}]}}},{\"name\":\"outputs\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroBitcoinOutput\",\"fields\":[{\"name\":\"satoshis\",\"type\":[\"long\",\"null\"]},{\"name\":\"script_bytes\",\"type\":\"bytes\"},{\"name\":\"script_string\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"script_string_error\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"pubkey_base58\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"pubkey_base58_error\",\"type\":[\"null\",\"string\"],\"default\":null}]}}}]}}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -58,9 +58,9 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
   @Deprecated public long difficulty;
   @Deprecated public long nonce;
   @Deprecated public long version;
+  @Deprecated public long height;
   @Deprecated public java.lang.Long work;
   @Deprecated public java.lang.CharSequence work_error;
-  @Deprecated public int height;
   @Deprecated public java.util.List<com.google.blockToBq.generated.AvroBitcoinTransaction> transactions;
 
   /**
@@ -79,12 +79,12 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
    * @param difficulty The new value for difficulty
    * @param nonce The new value for nonce
    * @param version The new value for version
+   * @param height The new value for height
    * @param work The new value for work
    * @param work_error The new value for work_error
-   * @param height The new value for height
    * @param transactions The new value for transactions
    */
-  public AvroBitcoinBlock(java.lang.CharSequence block_id, java.lang.CharSequence previous_block, java.lang.CharSequence merkle_root, java.lang.Long timestamp, java.lang.Long difficulty, java.lang.Long nonce, java.lang.Long version, java.lang.Long work, java.lang.CharSequence work_error, java.lang.Integer height, java.util.List<com.google.blockToBq.generated.AvroBitcoinTransaction> transactions) {
+  public AvroBitcoinBlock(java.lang.CharSequence block_id, java.lang.CharSequence previous_block, java.lang.CharSequence merkle_root, java.lang.Long timestamp, java.lang.Long difficulty, java.lang.Long nonce, java.lang.Long version, java.lang.Long height, java.lang.Long work, java.lang.CharSequence work_error, java.util.List<com.google.blockToBq.generated.AvroBitcoinTransaction> transactions) {
     this.block_id = block_id;
     this.previous_block = previous_block;
     this.merkle_root = merkle_root;
@@ -92,9 +92,9 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
     this.difficulty = difficulty;
     this.nonce = nonce;
     this.version = version;
+    this.height = height;
     this.work = work;
     this.work_error = work_error;
-    this.height = height;
     this.transactions = transactions;
   }
 
@@ -109,9 +109,9 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
     case 4: return difficulty;
     case 5: return nonce;
     case 6: return version;
-    case 7: return work;
-    case 8: return work_error;
-    case 9: return height;
+    case 7: return height;
+    case 8: return work;
+    case 9: return work_error;
     case 10: return transactions;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
@@ -128,9 +128,9 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
     case 4: difficulty = (java.lang.Long)value$; break;
     case 5: nonce = (java.lang.Long)value$; break;
     case 6: version = (java.lang.Long)value$; break;
-    case 7: work = (java.lang.Long)value$; break;
-    case 8: work_error = (java.lang.CharSequence)value$; break;
-    case 9: height = (java.lang.Integer)value$; break;
+    case 7: height = (java.lang.Long)value$; break;
+    case 8: work = (java.lang.Long)value$; break;
+    case 9: work_error = (java.lang.CharSequence)value$; break;
     case 10: transactions = (java.util.List<com.google.blockToBq.generated.AvroBitcoinTransaction>)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
@@ -249,6 +249,22 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
   }
 
   /**
+   * Gets the value of the 'height' field.
+   * @return The value of the 'height' field.
+   */
+  public java.lang.Long getHeight() {
+    return height;
+  }
+
+  /**
+   * Sets the value of the 'height' field.
+   * @param value the value to set.
+   */
+  public void setHeight(java.lang.Long value) {
+    this.height = value;
+  }
+
+  /**
    * Gets the value of the 'work' field.
    * @return The value of the 'work' field.
    */
@@ -278,22 +294,6 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
    */
   public void setWorkError(java.lang.CharSequence value) {
     this.work_error = value;
-  }
-
-  /**
-   * Gets the value of the 'height' field.
-   * @return The value of the 'height' field.
-   */
-  public java.lang.Integer getHeight() {
-    return height;
-  }
-
-  /**
-   * Sets the value of the 'height' field.
-   * @param value the value to set.
-   */
-  public void setHeight(java.lang.Integer value) {
-    this.height = value;
   }
 
   /**
@@ -351,9 +351,9 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
     private long difficulty;
     private long nonce;
     private long version;
+    private long height;
     private java.lang.Long work;
     private java.lang.CharSequence work_error;
-    private int height;
     private java.util.List<com.google.blockToBq.generated.AvroBitcoinTransaction> transactions;
 
     /** Creates a new Builder */
@@ -395,16 +395,16 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
         this.version = data().deepCopy(fields()[6].schema(), other.version);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.work)) {
-        this.work = data().deepCopy(fields()[7].schema(), other.work);
+      if (isValidValue(fields()[7], other.height)) {
+        this.height = data().deepCopy(fields()[7].schema(), other.height);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.work_error)) {
-        this.work_error = data().deepCopy(fields()[8].schema(), other.work_error);
+      if (isValidValue(fields()[8], other.work)) {
+        this.work = data().deepCopy(fields()[8].schema(), other.work);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.height)) {
-        this.height = data().deepCopy(fields()[9].schema(), other.height);
+      if (isValidValue(fields()[9], other.work_error)) {
+        this.work_error = data().deepCopy(fields()[9].schema(), other.work_error);
         fieldSetFlags()[9] = true;
       }
       if (isValidValue(fields()[10], other.transactions)) {
@@ -447,16 +447,16 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
         this.version = data().deepCopy(fields()[6].schema(), other.version);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.work)) {
-        this.work = data().deepCopy(fields()[7].schema(), other.work);
+      if (isValidValue(fields()[7], other.height)) {
+        this.height = data().deepCopy(fields()[7].schema(), other.height);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.work_error)) {
-        this.work_error = data().deepCopy(fields()[8].schema(), other.work_error);
+      if (isValidValue(fields()[8], other.work)) {
+        this.work = data().deepCopy(fields()[8].schema(), other.work);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.height)) {
-        this.height = data().deepCopy(fields()[9].schema(), other.height);
+      if (isValidValue(fields()[9], other.work_error)) {
+        this.work_error = data().deepCopy(fields()[9].schema(), other.work_error);
         fieldSetFlags()[9] = true;
       }
       if (isValidValue(fields()[10], other.transactions)) {
@@ -735,6 +735,44 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
     }
 
     /**
+      * Gets the value of the 'height' field.
+      * @return The value.
+      */
+    public java.lang.Long getHeight() {
+      return height;
+    }
+
+    /**
+      * Sets the value of the 'height' field.
+      * @param value The value of 'height'.
+      * @return This builder.
+      */
+    public com.google.blockToBq.generated.AvroBitcoinBlock.Builder setHeight(long value) {
+      validate(fields()[7], value);
+      this.height = value;
+      fieldSetFlags()[7] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'height' field has been set.
+      * @return True if the 'height' field has been set, false otherwise.
+      */
+    public boolean hasHeight() {
+      return fieldSetFlags()[7];
+    }
+
+
+    /**
+      * Clears the value of the 'height' field.
+      * @return This builder.
+      */
+    public com.google.blockToBq.generated.AvroBitcoinBlock.Builder clearHeight() {
+      fieldSetFlags()[7] = false;
+      return this;
+    }
+
+    /**
       * Gets the value of the 'work' field.
       * @return The value.
       */
@@ -748,9 +786,9 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
       * @return This builder.
       */
     public com.google.blockToBq.generated.AvroBitcoinBlock.Builder setWork(java.lang.Long value) {
-      validate(fields()[7], value);
+      validate(fields()[8], value);
       this.work = value;
-      fieldSetFlags()[7] = true;
+      fieldSetFlags()[8] = true;
       return this;
     }
 
@@ -759,7 +797,7 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
       * @return True if the 'work' field has been set, false otherwise.
       */
     public boolean hasWork() {
-      return fieldSetFlags()[7];
+      return fieldSetFlags()[8];
     }
 
 
@@ -769,7 +807,7 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
       */
     public com.google.blockToBq.generated.AvroBitcoinBlock.Builder clearWork() {
       work = null;
-      fieldSetFlags()[7] = false;
+      fieldSetFlags()[8] = false;
       return this;
     }
 
@@ -787,9 +825,9 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
       * @return This builder.
       */
     public com.google.blockToBq.generated.AvroBitcoinBlock.Builder setWorkError(java.lang.CharSequence value) {
-      validate(fields()[8], value);
+      validate(fields()[9], value);
       this.work_error = value;
-      fieldSetFlags()[8] = true;
+      fieldSetFlags()[9] = true;
       return this;
     }
 
@@ -798,7 +836,7 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
       * @return True if the 'work_error' field has been set, false otherwise.
       */
     public boolean hasWorkError() {
-      return fieldSetFlags()[8];
+      return fieldSetFlags()[9];
     }
 
 
@@ -808,44 +846,6 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
       */
     public com.google.blockToBq.generated.AvroBitcoinBlock.Builder clearWorkError() {
       work_error = null;
-      fieldSetFlags()[8] = false;
-      return this;
-    }
-
-    /**
-      * Gets the value of the 'height' field.
-      * @return The value.
-      */
-    public java.lang.Integer getHeight() {
-      return height;
-    }
-
-    /**
-      * Sets the value of the 'height' field.
-      * @param value The value of 'height'.
-      * @return This builder.
-      */
-    public com.google.blockToBq.generated.AvroBitcoinBlock.Builder setHeight(int value) {
-      validate(fields()[9], value);
-      this.height = value;
-      fieldSetFlags()[9] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'height' field has been set.
-      * @return True if the 'height' field has been set, false otherwise.
-      */
-    public boolean hasHeight() {
-      return fieldSetFlags()[9];
-    }
-
-
-    /**
-      * Clears the value of the 'height' field.
-      * @return This builder.
-      */
-    public com.google.blockToBq.generated.AvroBitcoinBlock.Builder clearHeight() {
       fieldSetFlags()[9] = false;
       return this;
     }
@@ -901,9 +901,9 @@ public class AvroBitcoinBlock extends org.apache.avro.specific.SpecificRecordBas
         record.difficulty = fieldSetFlags()[4] ? this.difficulty : (java.lang.Long) defaultValue(fields()[4]);
         record.nonce = fieldSetFlags()[5] ? this.nonce : (java.lang.Long) defaultValue(fields()[5]);
         record.version = fieldSetFlags()[6] ? this.version : (java.lang.Long) defaultValue(fields()[6]);
-        record.work = fieldSetFlags()[7] ? this.work : (java.lang.Long) defaultValue(fields()[7]);
-        record.work_error = fieldSetFlags()[8] ? this.work_error : (java.lang.CharSequence) defaultValue(fields()[8]);
-        record.height = fieldSetFlags()[9] ? this.height : (java.lang.Integer) defaultValue(fields()[9]);
+        record.height = fieldSetFlags()[7] ? this.height : (java.lang.Long) defaultValue(fields()[7]);
+        record.work = fieldSetFlags()[8] ? this.work : (java.lang.Long) defaultValue(fields()[8]);
+        record.work_error = fieldSetFlags()[9] ? this.work_error : (java.lang.CharSequence) defaultValue(fields()[9]);
         record.transactions = fieldSetFlags()[10] ? this.transactions : (java.util.List<com.google.blockToBq.generated.AvroBitcoinTransaction>) defaultValue(fields()[10]);
         return record;
       } catch (java.lang.Exception e) {

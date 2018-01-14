@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class AvroBitcoinOutput extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 6727102147948935092L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroBitcoinOutput\",\"namespace\":\"com.google.blockToBq.generated\",\"fields\":[{\"name\":\"satoshis\",\"type\":[\"long\",\"null\"]},{\"name\":\"script_bytes\",\"type\":\"bytes\"},{\"name\":\"script_string\",\"type\":[\"string\",\"null\"]},{\"name\":\"script_string_error\",\"type\":[\"string\",\"null\"]},{\"name\":\"pubkey_base58\",\"type\":[\"string\",\"null\"]},{\"name\":\"pubkey_base58_error\",\"type\":[\"string\",\"null\"]}]}");
+  private static final long serialVersionUID = 6990605988142861010L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroBitcoinOutput\",\"namespace\":\"com.google.blockToBq.generated\",\"fields\":[{\"name\":\"satoshis\",\"type\":[\"long\",\"null\"]},{\"name\":\"script_bytes\",\"type\":\"bytes\"},{\"name\":\"script_string\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"script_string_error\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"pubkey_base58\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"pubkey_base58_error\",\"type\":[\"null\",\"string\"],\"default\":null}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
