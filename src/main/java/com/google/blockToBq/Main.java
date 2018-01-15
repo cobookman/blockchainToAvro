@@ -1,6 +1,10 @@
 package com.google.blockToBq;
 
-import com.google.common.base.Strings;
+import com.google.cloud.ServiceOptions;
+import com.google.cloud.pubsub.v1.Publisher;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import org.apache.commons.cli.CommandLine;
@@ -17,22 +21,36 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
-  private static AvroWriter writer;
+  private static AvroGcsWriter writer;
   private static BitcoinBlockHandler bitcoinBlockHandler;
   private static BitcoinBlockDownloader bitcoinBlockDownloader;
   private static final Logger log = LoggerFactory.getLogger(Main.class);
+  private static final String projectId = ServiceOptions.getDefaultProjectId();
+
 
   public static void main(String[] args)
       throws InterruptedException, ExecutionException, BlockStoreException, IOException {
     Options options = new Options();
 
-    Option blockScript = new Option("s", "script", true, "script to run on a new block");
-    blockScript.setRequired(false);
-    options.addOption(blockScript);
+    Option bucket = new Option("b", "bucket", true,
+        "gcs bucket where to save blocks");
+    bucket.setRequired(true);
+    options.addOption(bucket);
 
-    Option workDir = new Option("d", "directory", true, "where to save data");
-    workDir.setRequired(false);
-    options.addOption(workDir);
+    Option topic = new Option("t", "topic", true,
+        "pubsub topic for publishing notifications of new block");
+    topic.setRequired(true);
+    options.addOption(topic);
+
+    Option workers = new Option("w", "workers", true,
+        "number of workers to use for processing blocks");
+    workers.setRequired(false);
+    options.addOption(workers);
+
+    Option db = new Option("d", "dblocation", true,
+        "where to store the block database");
+    db.setRequired(true);
+    options.addOption(db);
 
     CommandLineParser parser = new DefaultParser();
     HelpFormatter formatter = new HelpFormatter();
@@ -47,29 +65,35 @@ public class Main {
       return;
     }
 
-    sync(cmd);
+    attachShutdownListener();
+    while (true) {
+      loop(cmd);
+      log.info("Sleeping for 5 seconds, and re-checking for new blocks");
+      Thread.sleep(5000);
+    }
   }
 
-  public static void sync(CommandLine cmd)
+  /** Resync to latest bitcoin block. */
+  public static void loop(CommandLine cmd)
       throws IOException, ExecutionException, InterruptedException, BlockStoreException {
-
-    attachShutdownListener();
     NetworkParameters networkParameters = new MainNetParams();
 
-    String filePrefix;
-    if (!Strings.isNullOrEmpty(cmd.getOptionValue("directory"))) {
-      filePrefix = cmd.getOptionValue("directory");
-    } else {
-      filePrefix = System.getProperty("user.dir") + "/";
-    }
+    log.info("instantiating writer");
+    TopicName topicName = TopicName.of(projectId, cmd.getOptionValue("topic"));
+    Publisher pubsub = Publisher.newBuilder(topicName).build();
+    Storage storage = StorageOptions.getDefaultInstance().getService();
+    writer = new AvroGcsWriter(pubsub, storage, cmd.getOptionValue("bucket"));
 
-    writer = new AvroWriter(filePrefix, cmd.getOptionValue("script"));
-    bitcoinBlockHandler = new BitcoinBlockHandler(writer);
-    bitcoinBlockDownloader = new BitcoinBlockDownloader();
+    log.info("instantiating bitcoin handler & downloader");
+    int numWorkers = Integer.parseInt(cmd.getOptionValue("workers"));
+    bitcoinBlockHandler = new BitcoinBlockHandler(writer, numWorkers);
+    bitcoinBlockDownloader = new BitcoinBlockDownloader(cmd.getOptionValue("dblocation"));
+
+    log.info("starting blockchain download");
     bitcoinBlockDownloader.start(networkParameters, bitcoinBlockHandler);
     while (true) {
       if (bitcoinBlockDownloader.isDone()) {
-        System.out.println("Done Downloading");
+        log.info("No new blocks to download. Shutting down");
         shutdown();
       } else {
         Thread.sleep(1000);
@@ -88,25 +112,28 @@ public class Main {
   }
 
   private static void shutdown() throws IOException, InterruptedException {
-    System.out.println("shutting down");
+    log.warn("shutting down");
     if (bitcoinBlockDownloader != null) {
-      System.out.println("download of blockchain:\tstopping");
+      log.warn("download of blockchain:\tstopping");
       bitcoinBlockDownloader.stop();
-      System.out.println("download of blockchain:\tstopped");
+      log.warn("download of blockchain:\tstopped");
     }
 
     if (bitcoinBlockHandler != null) {
-      System.out.println("block queue:\tfinishing");
+      log.warn("block queue:\tfinishing");
       bitcoinBlockHandler.stop();
-      System.out.println("block queue:\tfinished");
+      log.warn("block queue:\tfinished");
     }
 
     if (writer != null) {
-      System.out.println("writer:\tstopping");
+      log.warn("writer:\tstopping");
       writer.close();
-      System.out.println("writer:\tstopped");
+      log.warn("writer:\tstopped");
     }
 
-    System.out.println("done shutting down");
+    log.warn("shutting down: Done");
+
+    // give logs some time to flush (no way to explictly flush :( ).
+    Thread.sleep(1000);
   }
 }
