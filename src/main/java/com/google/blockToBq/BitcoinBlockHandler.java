@@ -4,7 +4,6 @@ import com.google.blockToBq.generated.AvroBitcoinBlock;
 import com.google.blockToBq.generated.AvroBitcoinInput;
 import com.google.blockToBq.generated.AvroBitcoinOutput;
 import com.google.blockToBq.generated.AvroBitcoinTransaction;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -17,16 +16,20 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.params.MainNetParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener {
   public final int WRITE_RETRIES = 3;
-  public final int NUM_WORKERS = Runtime.getRuntime().availableProcessors() * 4;
-  private AvroWriter writer;
+  private AvroGcsWriter writer;
   private ExecutorService executor;
+  private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-  public BitcoinBlockHandler(AvroWriter writer) {
+  public BitcoinBlockHandler(AvroGcsWriter writer, Integer numWorkers) {
+    log.info("Starting threadpool to handle block downloads with " + numWorkers + " workers");
+    this.executor = Executors.newFixedThreadPool(numWorkers);
+
     this.writer = writer;
-    this.executor = Executors.newFixedThreadPool(NUM_WORKERS);
   }
 
   /** Called whenver a new block is downloaded. */
@@ -38,16 +41,16 @@ public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener
   private void processBlock(long blockHeight, Block block) {
     AvroBitcoinBlock avroBlock = convertBlockToAvro(blockHeight, block);
 
-    IOException ioException = null;
+    Exception exception = null;
     for (int i = 0; i < WRITE_RETRIES; ++i) {
       try {
         writer.write(avroBlock);
-      } catch (IOException e) {
-        ioException = e;
+      } catch (Exception e) {
+        exception  = e;
       }
     }
-    if (ioException != null) {
-      ioException.printStackTrace();
+    if (exception  != null) {
+      exception.printStackTrace();
     }
   }
 

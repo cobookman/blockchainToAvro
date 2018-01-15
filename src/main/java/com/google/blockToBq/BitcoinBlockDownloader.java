@@ -31,9 +31,14 @@ public class BitcoinBlockDownloader {
 
   private AtomicBoolean isDone;
   private PeerGroup peerGroup;
+  private String dblocation;
 
   /** Instantiate a new BitcoinBlockDownloader instance. */
-  public BitcoinBlockDownloader() {
+  public BitcoinBlockDownloader(String dblocation) {
+    this.dblocation = dblocation;
+    if (!this.dblocation.endsWith("/")) {
+      this.dblocation += "/";
+    }
     isDone = new AtomicBoolean(false);
 
   }
@@ -54,7 +59,7 @@ public class BitcoinBlockDownloader {
 
     // Validate the chain we're downloading, vs assuming incoming blocks are valid
     LevelDBFullPrunedBlockStore blockStore = new LevelDBFullPrunedBlockStore(
-        networkParameters, "blockdb/", Integer.MAX_VALUE);
+        networkParameters, this.dblocation, Integer.MAX_VALUE);
     FullPrunedBlockChain blockChain = new FullPrunedBlockChain(networkParameters, blockStore);
 
     // configure what peers we connect to

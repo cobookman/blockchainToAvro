@@ -18,6 +18,8 @@
     <bigquery.version>0.32.0-beta</bigquery.version>
     <avro.version>1.8.2</avro.version>
     <google-cloud-storage.version>1.14.0</google-cloud-storage.version>
+    <google-cloud-pubsub.version>0.32.0-beta</google-cloud-pubsub.version>
+    <protobuf.version>3.4.0</protobuf.version>
     <cli.version>1.4</cli.version>
   </properties>
 
@@ -53,6 +55,16 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
       <version>${google-cloud-storage.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-pubsub</artifactId>
+      <version>${google-cloud-pubsub.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.avro</groupId>
