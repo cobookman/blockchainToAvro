@@ -6,7 +6,6 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -27,9 +26,8 @@ public class Main {
   private static final Logger log = LoggerFactory.getLogger(Main.class);
   private static final String projectId = ServiceOptions.getDefaultProjectId();
 
-
   public static void main(String[] args)
-      throws InterruptedException, ExecutionException, BlockStoreException, IOException {
+      throws InterruptedException, IOException, BlockStoreException {
     Options options = new Options();
 
     Option bucket = new Option("b", "bucket", true,
@@ -66,18 +64,14 @@ public class Main {
     }
 
     attachShutdownListener();
-    while (true) {
-      loop(cmd);
-      log.info("Sleeping for 5 seconds, and re-checking for new blocks");
-      Thread.sleep(5000);
-    }
+    sync(cmd);
   }
 
   /** Resync to latest bitcoin block. */
-  public static void loop(CommandLine cmd)
-      throws IOException, ExecutionException, InterruptedException, BlockStoreException {
-    NetworkParameters networkParameters = new MainNetParams();
+  public static void sync(CommandLine cmd)
+      throws IOException, InterruptedException, BlockStoreException {
 
+    NetworkParameters networkParameters = new MainNetParams();
     log.info("instantiating writer");
     TopicName topicName = TopicName.of(projectId, cmd.getOptionValue("topic"));
     Publisher pubsub = Publisher.newBuilder(topicName).build();
@@ -91,10 +85,13 @@ public class Main {
 
     log.info("starting blockchain download");
     bitcoinBlockDownloader.start(networkParameters, bitcoinBlockHandler);
+
     while (true) {
       if (bitcoinBlockDownloader.isDone()) {
-        log.info("No new blocks to download. Shutting down");
-        shutdown();
+        log.info("Sync'd to head, pausing for 10 seconds");
+        Thread.sleep(10000);
+        log.info("Restarting sync");
+        bitcoinBlockDownloader.start(networkParameters, bitcoinBlockHandler);
       } else {
         Thread.sleep(1000);
       }

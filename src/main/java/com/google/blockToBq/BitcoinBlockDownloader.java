@@ -47,7 +47,9 @@ public class BitcoinBlockDownloader {
   public void stop() {
     if (peerGroup != null) {
       peerGroup.stop();
+      peerGroup = null;
     }
+    isDone.set(false);
   }
 
   /** Starts the process of downloading the latest blocks stored in the blockchain. */
