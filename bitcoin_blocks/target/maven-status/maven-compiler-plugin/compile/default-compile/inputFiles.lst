@@ -1,0 +1,8 @@
+/usr/local/google/home/bookman/projects/blocktobq/src/main/java/com/google/blockToBq/generated/AvroBitcoinInput.java
+/usr/local/google/home/bookman/projects/blocktobq/src/main/java/com/google/blockToBq/BitcoinBlockDownloader.java
+/usr/local/google/home/bookman/projects/blocktobq/src/main/java/com/google/blockToBq/generated/AvroBitcoinTransaction.java
+/usr/local/google/home/bookman/projects/blocktobq/src/main/java/com/google/blockToBq/generated/AvroBitcoinOutput.java
+/usr/local/google/home/bookman/projects/blocktobq/src/main/java/com/google/blockToBq/Main.java
+/usr/local/google/home/bookman/projects/blocktobq/src/main/java/com/google/blockToBq/BitcoinBlockHandler.java
+/usr/local/google/home/bookman/projects/blocktobq/src/main/java/com/google/blockToBq/generated/AvroBitcoinBlock.java
+/usr/local/google/home/bookman/projects/blocktobq/src/main/java/com/google/blockToBq/AvroGcsWriter.java
