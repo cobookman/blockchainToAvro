@@ -1,11 +1,26 @@
 package com.google.blockToBq;
 
+import com.google.blockToBq.AvroGcsWriter.Callback;
 import com.google.cloud.ServiceOptions;
-import com.google.cloud.pubsub.v1.Publisher;
+import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.FormatOptions;
+import com.google.cloud.bigquery.Job;
+import com.google.cloud.bigquery.Table;
+import com.google.cloud.bigquery.TableId;
+import com.google.cloud.storage.Acl;
+import com.google.cloud.storage.Acl.Role;
+import com.google.cloud.storage.Acl.User;
+import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.google.pubsub.v1.TopicName;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -24,7 +39,6 @@ public class Main {
   private static BitcoinBlockHandler bitcoinBlockHandler;
   private static BitcoinBlockDownloader bitcoinBlockDownloader;
   private static final Logger log = LoggerFactory.getLogger(Main.class);
-  private static final String projectId = ServiceOptions.getDefaultProjectId();
 
   public static void main(String[] args)
       throws InterruptedException, IOException, BlockStoreException {
@@ -35,15 +49,22 @@ public class Main {
     bucket.setRequired(true);
     options.addOption(bucket);
 
-    Option topic = new Option("t", "topic", true,
-        "pubsub topic for publishing notifications of new block");
-    topic.setRequired(true);
-    options.addOption(topic);
+    Option workdir = new Option("w", "workdir", true,
+        "directory to save blocks in filesystem");
+    workdir.setRequired(true);
+    options.addOption(workdir);
 
-    Option workers = new Option("w", "workers", true,
+
+    Option workers = new Option("t", "threads", true,
         "number of workers to use for processing blocks");
     workers.setRequired(false);
     options.addOption(workers);
+
+    Option frt = new Option("r", "rotationtime", true,
+        "how often to rotate file (in seconds)");
+    frt.setRequired(true);
+    options.addOption(frt);
+
 
     Option db = new Option("d", "dblocation", true,
         "where to store the block database");
@@ -68,15 +89,22 @@ public class Main {
   }
 
   /** Resync to latest bitcoin block. */
-  public static void sync(CommandLine cmd)
+  private static void sync(CommandLine cmd)
       throws IOException, InterruptedException, BlockStoreException {
-
     NetworkParameters networkParameters = new MainNetParams();
+
     log.info("instantiating writer");
-    TopicName topicName = TopicName.of(projectId, cmd.getOptionValue("topic"));
-    Publisher pubsub = Publisher.newBuilder(topicName).build();
     Storage storage = StorageOptions.getDefaultInstance().getService();
-    writer = new AvroGcsWriter(pubsub, storage, cmd.getOptionValue("bucket"));
+    BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+    Table table = bigquery.getTable(TableId.of("dataset", "table"));
+    OnFileRotation onFileRotation = new OnFileRotation(
+        storage,
+        cmd.getOptionValue("bucket"),
+        table);
+    writer = new AvroGcsWriter(
+        cmd.getOptionValue("workdir"),
+        Integer.parseInt(cmd.getOptionValue("rotationtime")),
+        onFileRotation);
 
     log.info("instantiating bitcoin handler & downloader");
     int numWorkers = Integer.parseInt(cmd.getOptionValue("workers"));
@@ -97,6 +125,64 @@ public class Main {
       }
     }
   }
+
+  public static class OnFileRotation implements Callback {
+    private Storage storage;
+    private String bucket;
+    private Table table;
+
+    public OnFileRotation(Storage storage, String bucket, Table table) {
+      this.storage = storage;
+      this.bucket = bucket;
+      this.table = table;
+    }
+
+    @Override
+    public void callback(String filepath) {
+      // upload to GCS
+      BlobInfo blobInfo = BlobInfo
+          .newBuilder(bucket, filepath)
+          .setAcl(new ArrayList<>(Arrays.asList(Acl.of(User.ofAllUsers(), Role.READER))))
+          .build();
+
+      // Upload to GCS
+      try (FileInputStream is = new FileInputStream(new File(filepath))) {
+        storage.create(blobInfo, is);
+
+      } catch (IOException e) {
+        log.error("OnFileRotation.callback", "upload to gcs", e);
+        return;
+      }
+
+      // Ingest to BQ
+      Job loadJob = table.load(FormatOptions.avro(), blobInfo.getSelfLink());
+      try {
+        loadJob.waitFor();
+        if (loadJob.getStatus().getError() != null) {
+          throw new RuntimeException(loadJob.getStatus().getError().getMessage());
+        }
+
+      } catch (InterruptedException e) {
+        log.error("OnFileRotation.callback", "bq ingest gcs", e);
+
+        return;
+
+      } catch (RuntimeException e) {
+        log.error("OnFileRotation.callback", "bq ingest gcs", e);
+        return;
+      }
+
+      // Delete File as now done
+      try {
+        Files.delete(Paths.get(filepath));
+
+      } catch (IOException e) {
+        log.error("OnFileRotation.callback", "cleanup file", e);
+        return;
+      }
+    }
+  }
+
 
   private static void attachShutdownListener() {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {

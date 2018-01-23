@@ -20,6 +20,7 @@
     <google-cloud-storage.version>1.14.0</google-cloud-storage.version>
     <google-cloud-pubsub.version>0.32.0-beta</google-cloud-pubsub.version>
     <google-cloud-logging.version>1.14.0</google-cloud-logging.version>
+    <google-cloud-bigquery.version>0.32.0-beta</google-cloud-bigquery.version>
     <protobuf.version>3.4.0</protobuf.version>
     <cli.version>1.4</cli.version>
   </properties>
@@ -71,6 +72,11 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
       <version>${google-cloud-logging.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-bigquery</artifactId>
+      <version>${bigquery.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.avro</groupId>

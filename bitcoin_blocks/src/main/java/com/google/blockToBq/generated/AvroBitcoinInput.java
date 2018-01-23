@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class AvroBitcoinInput extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -8358444118496259202L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroBitcoinInput\",\"namespace\":\"com.google.blockToBq.generated\",\"fields\":[{\"name\":\"script_bytes\",\"type\":\"bytes\"},{\"name\":\"script_string\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"script_string_error\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"sequence_number\",\"type\":\"long\"},{\"name\":\"pubkey_base58\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"pubkey_base58_error\",\"type\":[\"null\",\"string\"],\"default\":null}]}");
+  private static final long serialVersionUID = -3396712888028001356L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroBitcoinInput\",\"namespace\":\"com.google.blockToBq.generated\",\"fields\":[{\"name\":\"input_script_bytes\",\"type\":\"bytes\"},{\"name\":\"input_script_string\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"input_script_string_error\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"input_sequence_number\",\"type\":\"long\"},{\"name\":\"input_pubkey_base58\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"input_pubkey_base58_error\",\"type\":[\"null\",\"string\"],\"default\":null}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -51,12 +51,12 @@ public class AvroBitcoinInput extends org.apache.avro.specific.SpecificRecordBas
     return DECODER.decode(b);
   }
 
-  @Deprecated public java.nio.ByteBuffer script_bytes;
-  @Deprecated public java.lang.CharSequence script_string;
-  @Deprecated public java.lang.CharSequence script_string_error;
-  @Deprecated public long sequence_number;
-  @Deprecated public java.lang.CharSequence pubkey_base58;
-  @Deprecated public java.lang.CharSequence pubkey_base58_error;
+  @Deprecated public java.nio.ByteBuffer input_script_bytes;
+  @Deprecated public java.lang.CharSequence input_script_string;
+  @Deprecated public java.lang.CharSequence input_script_string_error;
+  @Deprecated public long input_sequence_number;
+  @Deprecated public java.lang.CharSequence input_pubkey_base58;
+  @Deprecated public java.lang.CharSequence input_pubkey_base58_error;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -67,32 +67,32 @@ public class AvroBitcoinInput extends org.apache.avro.specific.SpecificRecordBas
 
   /**
    * All-args constructor.
-   * @param script_bytes The new value for script_bytes
-   * @param script_string The new value for script_string
-   * @param script_string_error The new value for script_string_error
-   * @param sequence_number The new value for sequence_number
-   * @param pubkey_base58 The new value for pubkey_base58
-   * @param pubkey_base58_error The new value for pubkey_base58_error
+   * @param input_script_bytes The new value for input_script_bytes
+   * @param input_script_string The new value for input_script_string
+   * @param input_script_string_error The new value for input_script_string_error
+   * @param input_sequence_number The new value for input_sequence_number
+   * @param input_pubkey_base58 The new value for input_pubkey_base58
+   * @param input_pubkey_base58_error The new value for input_pubkey_base58_error
    */
-  public AvroBitcoinInput(java.nio.ByteBuffer script_bytes, java.lang.CharSequence script_string, java.lang.CharSequence script_string_error, java.lang.Long sequence_number, java.lang.CharSequence pubkey_base58, java.lang.CharSequence pubkey_base58_error) {
-    this.script_bytes = script_bytes;
-    this.script_string = script_string;
-    this.script_string_error = script_string_error;
-    this.sequence_number = sequence_number;
-    this.pubkey_base58 = pubkey_base58;
-    this.pubkey_base58_error = pubkey_base58_error;
+  public AvroBitcoinInput(java.nio.ByteBuffer input_script_bytes, java.lang.CharSequence input_script_string, java.lang.CharSequence input_script_string_error, java.lang.Long input_sequence_number, java.lang.CharSequence input_pubkey_base58, java.lang.CharSequence input_pubkey_base58_error) {
+    this.input_script_bytes = input_script_bytes;
+    this.input_script_string = input_script_string;
+    this.input_script_string_error = input_script_string_error;
+    this.input_sequence_number = input_sequence_number;
+    this.input_pubkey_base58 = input_pubkey_base58;
+    this.input_pubkey_base58_error = input_pubkey_base58_error;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
   // Used by DatumWriter.  Applications should not call.
   public java.lang.Object get(int field$) {
     switch (field$) {
-    case 0: return script_bytes;
-    case 1: return script_string;
-    case 2: return script_string_error;
-    case 3: return sequence_number;
-    case 4: return pubkey_base58;
-    case 5: return pubkey_base58_error;
+    case 0: return input_script_bytes;
+    case 1: return input_script_string;
+    case 2: return input_script_string_error;
+    case 3: return input_sequence_number;
+    case 4: return input_pubkey_base58;
+    case 5: return input_pubkey_base58_error;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -101,110 +101,110 @@ public class AvroBitcoinInput extends org.apache.avro.specific.SpecificRecordBas
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: script_bytes = (java.nio.ByteBuffer)value$; break;
-    case 1: script_string = (java.lang.CharSequence)value$; break;
-    case 2: script_string_error = (java.lang.CharSequence)value$; break;
-    case 3: sequence_number = (java.lang.Long)value$; break;
-    case 4: pubkey_base58 = (java.lang.CharSequence)value$; break;
-    case 5: pubkey_base58_error = (java.lang.CharSequence)value$; break;
+    case 0: input_script_bytes = (java.nio.ByteBuffer)value$; break;
+    case 1: input_script_string = (java.lang.CharSequence)value$; break;
+    case 2: input_script_string_error = (java.lang.CharSequence)value$; break;
+    case 3: input_sequence_number = (java.lang.Long)value$; break;
+    case 4: input_pubkey_base58 = (java.lang.CharSequence)value$; break;
+    case 5: input_pubkey_base58_error = (java.lang.CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
   /**
-   * Gets the value of the 'script_bytes' field.
-   * @return The value of the 'script_bytes' field.
+   * Gets the value of the 'input_script_bytes' field.
+   * @return The value of the 'input_script_bytes' field.
    */
-  public java.nio.ByteBuffer getScriptBytes() {
-    return script_bytes;
+  public java.nio.ByteBuffer getInputScriptBytes() {
+    return input_script_bytes;
   }
 
   /**
-   * Sets the value of the 'script_bytes' field.
+   * Sets the value of the 'input_script_bytes' field.
    * @param value the value to set.
    */
-  public void setScriptBytes(java.nio.ByteBuffer value) {
-    this.script_bytes = value;
+  public void setInputScriptBytes(java.nio.ByteBuffer value) {
+    this.input_script_bytes = value;
   }
 
   /**
-   * Gets the value of the 'script_string' field.
-   * @return The value of the 'script_string' field.
+   * Gets the value of the 'input_script_string' field.
+   * @return The value of the 'input_script_string' field.
    */
-  public java.lang.CharSequence getScriptString() {
-    return script_string;
+  public java.lang.CharSequence getInputScriptString() {
+    return input_script_string;
   }
 
   /**
-   * Sets the value of the 'script_string' field.
+   * Sets the value of the 'input_script_string' field.
    * @param value the value to set.
    */
-  public void setScriptString(java.lang.CharSequence value) {
-    this.script_string = value;
+  public void setInputScriptString(java.lang.CharSequence value) {
+    this.input_script_string = value;
   }
 
   /**
-   * Gets the value of the 'script_string_error' field.
-   * @return The value of the 'script_string_error' field.
+   * Gets the value of the 'input_script_string_error' field.
+   * @return The value of the 'input_script_string_error' field.
    */
-  public java.lang.CharSequence getScriptStringError() {
-    return script_string_error;
+  public java.lang.CharSequence getInputScriptStringError() {
+    return input_script_string_error;
   }
 
   /**
-   * Sets the value of the 'script_string_error' field.
+   * Sets the value of the 'input_script_string_error' field.
    * @param value the value to set.
    */
-  public void setScriptStringError(java.lang.CharSequence value) {
-    this.script_string_error = value;
+  public void setInputScriptStringError(java.lang.CharSequence value) {
+    this.input_script_string_error = value;
   }
 
   /**
-   * Gets the value of the 'sequence_number' field.
-   * @return The value of the 'sequence_number' field.
+   * Gets the value of the 'input_sequence_number' field.
+   * @return The value of the 'input_sequence_number' field.
    */
-  public java.lang.Long getSequenceNumber() {
-    return sequence_number;
+  public java.lang.Long getInputSequenceNumber() {
+    return input_sequence_number;
   }
 
   /**
-   * Sets the value of the 'sequence_number' field.
+   * Sets the value of the 'input_sequence_number' field.
    * @param value the value to set.
    */
-  public void setSequenceNumber(java.lang.Long value) {
-    this.sequence_number = value;
+  public void setInputSequenceNumber(java.lang.Long value) {
+    this.input_sequence_number = value;
   }
 
   /**
-   * Gets the value of the 'pubkey_base58' field.
-   * @return The value of the 'pubkey_base58' field.
+   * Gets the value of the 'input_pubkey_base58' field.
+   * @return The value of the 'input_pubkey_base58' field.
    */
-  public java.lang.CharSequence getPubkeyBase58() {
-    return pubkey_base58;
+  public java.lang.CharSequence getInputPubkeyBase58() {
+    return input_pubkey_base58;
   }
 
   /**
-   * Sets the value of the 'pubkey_base58' field.
+   * Sets the value of the 'input_pubkey_base58' field.
    * @param value the value to set.
    */
-  public void setPubkeyBase58(java.lang.CharSequence value) {
-    this.pubkey_base58 = value;
+  public void setInputPubkeyBase58(java.lang.CharSequence value) {
+    this.input_pubkey_base58 = value;
   }
 
   /**
-   * Gets the value of the 'pubkey_base58_error' field.
-   * @return The value of the 'pubkey_base58_error' field.
+   * Gets the value of the 'input_pubkey_base58_error' field.
+   * @return The value of the 'input_pubkey_base58_error' field.
    */
-  public java.lang.CharSequence getPubkeyBase58Error() {
-    return pubkey_base58_error;
+  public java.lang.CharSequence getInputPubkeyBase58Error() {
+    return input_pubkey_base58_error;
   }
 
   /**
-   * Sets the value of the 'pubkey_base58_error' field.
+   * Sets the value of the 'input_pubkey_base58_error' field.
    * @param value the value to set.
    */
-  public void setPubkeyBase58Error(java.lang.CharSequence value) {
-    this.pubkey_base58_error = value;
+  public void setInputPubkeyBase58Error(java.lang.CharSequence value) {
+    this.input_pubkey_base58_error = value;
   }
 
   /**
@@ -239,12 +239,12 @@ public class AvroBitcoinInput extends org.apache.avro.specific.SpecificRecordBas
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<AvroBitcoinInput>
     implements org.apache.avro.data.RecordBuilder<AvroBitcoinInput> {
 
-    private java.nio.ByteBuffer script_bytes;
-    private java.lang.CharSequence script_string;
-    private java.lang.CharSequence script_string_error;
-    private long sequence_number;
-    private java.lang.CharSequence pubkey_base58;
-    private java.lang.CharSequence pubkey_base58_error;
+    private java.nio.ByteBuffer input_script_bytes;
+    private java.lang.CharSequence input_script_string;
+    private java.lang.CharSequence input_script_string_error;
+    private long input_sequence_number;
+    private java.lang.CharSequence input_pubkey_base58;
+    private java.lang.CharSequence input_pubkey_base58_error;
 
     /** Creates a new Builder */
     private Builder() {
@@ -257,28 +257,28 @@ public class AvroBitcoinInput extends org.apache.avro.specific.SpecificRecordBas
      */
     private Builder(com.google.blockToBq.generated.AvroBitcoinInput.Builder other) {
       super(other);
-      if (isValidValue(fields()[0], other.script_bytes)) {
-        this.script_bytes = data().deepCopy(fields()[0].schema(), other.script_bytes);
+      if (isValidValue(fields()[0], other.input_script_bytes)) {
+        this.input_script_bytes = data().deepCopy(fields()[0].schema(), other.input_script_bytes);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.script_string)) {
-        this.script_string = data().deepCopy(fields()[1].schema(), other.script_string);
+      if (isValidValue(fields()[1], other.input_script_string)) {
+        this.input_script_string = data().deepCopy(fields()[1].schema(), other.input_script_string);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.script_string_error)) {
-        this.script_string_error = data().deepCopy(fields()[2].schema(), other.script_string_error);
+      if (isValidValue(fields()[2], other.input_script_string_error)) {
+        this.input_script_string_error = data().deepCopy(fields()[2].schema(), other.input_script_string_error);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.sequence_number)) {
-        this.sequence_number = data().deepCopy(fields()[3].schema(), other.sequence_number);
+      if (isValidValue(fields()[3], other.input_sequence_number)) {
+        this.input_sequence_number = data().deepCopy(fields()[3].schema(), other.input_sequence_number);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.pubkey_base58)) {
-        this.pubkey_base58 = data().deepCopy(fields()[4].schema(), other.pubkey_base58);
+      if (isValidValue(fields()[4], other.input_pubkey_base58)) {
+        this.input_pubkey_base58 = data().deepCopy(fields()[4].schema(), other.input_pubkey_base58);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.pubkey_base58_error)) {
-        this.pubkey_base58_error = data().deepCopy(fields()[5].schema(), other.pubkey_base58_error);
+      if (isValidValue(fields()[5], other.input_pubkey_base58_error)) {
+        this.input_pubkey_base58_error = data().deepCopy(fields()[5].schema(), other.input_pubkey_base58_error);
         fieldSetFlags()[5] = true;
       }
     }
@@ -289,261 +289,261 @@ public class AvroBitcoinInput extends org.apache.avro.specific.SpecificRecordBas
      */
     private Builder(com.google.blockToBq.generated.AvroBitcoinInput other) {
             super(SCHEMA$);
-      if (isValidValue(fields()[0], other.script_bytes)) {
-        this.script_bytes = data().deepCopy(fields()[0].schema(), other.script_bytes);
+      if (isValidValue(fields()[0], other.input_script_bytes)) {
+        this.input_script_bytes = data().deepCopy(fields()[0].schema(), other.input_script_bytes);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.script_string)) {
-        this.script_string = data().deepCopy(fields()[1].schema(), other.script_string);
+      if (isValidValue(fields()[1], other.input_script_string)) {
+        this.input_script_string = data().deepCopy(fields()[1].schema(), other.input_script_string);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.script_string_error)) {
-        this.script_string_error = data().deepCopy(fields()[2].schema(), other.script_string_error);
+      if (isValidValue(fields()[2], other.input_script_string_error)) {
+        this.input_script_string_error = data().deepCopy(fields()[2].schema(), other.input_script_string_error);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.sequence_number)) {
-        this.sequence_number = data().deepCopy(fields()[3].schema(), other.sequence_number);
+      if (isValidValue(fields()[3], other.input_sequence_number)) {
+        this.input_sequence_number = data().deepCopy(fields()[3].schema(), other.input_sequence_number);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.pubkey_base58)) {
-        this.pubkey_base58 = data().deepCopy(fields()[4].schema(), other.pubkey_base58);
+      if (isValidValue(fields()[4], other.input_pubkey_base58)) {
+        this.input_pubkey_base58 = data().deepCopy(fields()[4].schema(), other.input_pubkey_base58);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.pubkey_base58_error)) {
-        this.pubkey_base58_error = data().deepCopy(fields()[5].schema(), other.pubkey_base58_error);
+      if (isValidValue(fields()[5], other.input_pubkey_base58_error)) {
+        this.input_pubkey_base58_error = data().deepCopy(fields()[5].schema(), other.input_pubkey_base58_error);
         fieldSetFlags()[5] = true;
       }
     }
 
     /**
-      * Gets the value of the 'script_bytes' field.
+      * Gets the value of the 'input_script_bytes' field.
       * @return The value.
       */
-    public java.nio.ByteBuffer getScriptBytes() {
-      return script_bytes;
+    public java.nio.ByteBuffer getInputScriptBytes() {
+      return input_script_bytes;
     }
 
     /**
-      * Sets the value of the 'script_bytes' field.
-      * @param value The value of 'script_bytes'.
+      * Sets the value of the 'input_script_bytes' field.
+      * @param value The value of 'input_script_bytes'.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setScriptBytes(java.nio.ByteBuffer value) {
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setInputScriptBytes(java.nio.ByteBuffer value) {
       validate(fields()[0], value);
-      this.script_bytes = value;
+      this.input_script_bytes = value;
       fieldSetFlags()[0] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'script_bytes' field has been set.
-      * @return True if the 'script_bytes' field has been set, false otherwise.
+      * Checks whether the 'input_script_bytes' field has been set.
+      * @return True if the 'input_script_bytes' field has been set, false otherwise.
       */
-    public boolean hasScriptBytes() {
+    public boolean hasInputScriptBytes() {
       return fieldSetFlags()[0];
     }
 
 
     /**
-      * Clears the value of the 'script_bytes' field.
+      * Clears the value of the 'input_script_bytes' field.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearScriptBytes() {
-      script_bytes = null;
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearInputScriptBytes() {
+      input_script_bytes = null;
       fieldSetFlags()[0] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'script_string' field.
+      * Gets the value of the 'input_script_string' field.
       * @return The value.
       */
-    public java.lang.CharSequence getScriptString() {
-      return script_string;
+    public java.lang.CharSequence getInputScriptString() {
+      return input_script_string;
     }
 
     /**
-      * Sets the value of the 'script_string' field.
-      * @param value The value of 'script_string'.
+      * Sets the value of the 'input_script_string' field.
+      * @param value The value of 'input_script_string'.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setScriptString(java.lang.CharSequence value) {
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setInputScriptString(java.lang.CharSequence value) {
       validate(fields()[1], value);
-      this.script_string = value;
+      this.input_script_string = value;
       fieldSetFlags()[1] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'script_string' field has been set.
-      * @return True if the 'script_string' field has been set, false otherwise.
+      * Checks whether the 'input_script_string' field has been set.
+      * @return True if the 'input_script_string' field has been set, false otherwise.
       */
-    public boolean hasScriptString() {
+    public boolean hasInputScriptString() {
       return fieldSetFlags()[1];
     }
 
 
     /**
-      * Clears the value of the 'script_string' field.
+      * Clears the value of the 'input_script_string' field.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearScriptString() {
-      script_string = null;
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearInputScriptString() {
+      input_script_string = null;
       fieldSetFlags()[1] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'script_string_error' field.
+      * Gets the value of the 'input_script_string_error' field.
       * @return The value.
       */
-    public java.lang.CharSequence getScriptStringError() {
-      return script_string_error;
+    public java.lang.CharSequence getInputScriptStringError() {
+      return input_script_string_error;
     }
 
     /**
-      * Sets the value of the 'script_string_error' field.
-      * @param value The value of 'script_string_error'.
+      * Sets the value of the 'input_script_string_error' field.
+      * @param value The value of 'input_script_string_error'.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setScriptStringError(java.lang.CharSequence value) {
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setInputScriptStringError(java.lang.CharSequence value) {
       validate(fields()[2], value);
-      this.script_string_error = value;
+      this.input_script_string_error = value;
       fieldSetFlags()[2] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'script_string_error' field has been set.
-      * @return True if the 'script_string_error' field has been set, false otherwise.
+      * Checks whether the 'input_script_string_error' field has been set.
+      * @return True if the 'input_script_string_error' field has been set, false otherwise.
       */
-    public boolean hasScriptStringError() {
+    public boolean hasInputScriptStringError() {
       return fieldSetFlags()[2];
     }
 
 
     /**
-      * Clears the value of the 'script_string_error' field.
+      * Clears the value of the 'input_script_string_error' field.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearScriptStringError() {
-      script_string_error = null;
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearInputScriptStringError() {
+      input_script_string_error = null;
       fieldSetFlags()[2] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'sequence_number' field.
+      * Gets the value of the 'input_sequence_number' field.
       * @return The value.
       */
-    public java.lang.Long getSequenceNumber() {
-      return sequence_number;
+    public java.lang.Long getInputSequenceNumber() {
+      return input_sequence_number;
     }
 
     /**
-      * Sets the value of the 'sequence_number' field.
-      * @param value The value of 'sequence_number'.
+      * Sets the value of the 'input_sequence_number' field.
+      * @param value The value of 'input_sequence_number'.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setSequenceNumber(long value) {
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setInputSequenceNumber(long value) {
       validate(fields()[3], value);
-      this.sequence_number = value;
+      this.input_sequence_number = value;
       fieldSetFlags()[3] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'sequence_number' field has been set.
-      * @return True if the 'sequence_number' field has been set, false otherwise.
+      * Checks whether the 'input_sequence_number' field has been set.
+      * @return True if the 'input_sequence_number' field has been set, false otherwise.
       */
-    public boolean hasSequenceNumber() {
+    public boolean hasInputSequenceNumber() {
       return fieldSetFlags()[3];
     }
 
 
     /**
-      * Clears the value of the 'sequence_number' field.
+      * Clears the value of the 'input_sequence_number' field.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearSequenceNumber() {
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearInputSequenceNumber() {
       fieldSetFlags()[3] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'pubkey_base58' field.
+      * Gets the value of the 'input_pubkey_base58' field.
       * @return The value.
       */
-    public java.lang.CharSequence getPubkeyBase58() {
-      return pubkey_base58;
+    public java.lang.CharSequence getInputPubkeyBase58() {
+      return input_pubkey_base58;
     }
 
     /**
-      * Sets the value of the 'pubkey_base58' field.
-      * @param value The value of 'pubkey_base58'.
+      * Sets the value of the 'input_pubkey_base58' field.
+      * @param value The value of 'input_pubkey_base58'.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setPubkeyBase58(java.lang.CharSequence value) {
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setInputPubkeyBase58(java.lang.CharSequence value) {
       validate(fields()[4], value);
-      this.pubkey_base58 = value;
+      this.input_pubkey_base58 = value;
       fieldSetFlags()[4] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'pubkey_base58' field has been set.
-      * @return True if the 'pubkey_base58' field has been set, false otherwise.
+      * Checks whether the 'input_pubkey_base58' field has been set.
+      * @return True if the 'input_pubkey_base58' field has been set, false otherwise.
       */
-    public boolean hasPubkeyBase58() {
+    public boolean hasInputPubkeyBase58() {
       return fieldSetFlags()[4];
     }
 
 
     /**
-      * Clears the value of the 'pubkey_base58' field.
+      * Clears the value of the 'input_pubkey_base58' field.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearPubkeyBase58() {
-      pubkey_base58 = null;
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearInputPubkeyBase58() {
+      input_pubkey_base58 = null;
       fieldSetFlags()[4] = false;
       return this;
     }
 
     /**
-      * Gets the value of the 'pubkey_base58_error' field.
+      * Gets the value of the 'input_pubkey_base58_error' field.
       * @return The value.
       */
-    public java.lang.CharSequence getPubkeyBase58Error() {
-      return pubkey_base58_error;
+    public java.lang.CharSequence getInputPubkeyBase58Error() {
+      return input_pubkey_base58_error;
     }
 
     /**
-      * Sets the value of the 'pubkey_base58_error' field.
-      * @param value The value of 'pubkey_base58_error'.
+      * Sets the value of the 'input_pubkey_base58_error' field.
+      * @param value The value of 'input_pubkey_base58_error'.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setPubkeyBase58Error(java.lang.CharSequence value) {
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder setInputPubkeyBase58Error(java.lang.CharSequence value) {
       validate(fields()[5], value);
-      this.pubkey_base58_error = value;
+      this.input_pubkey_base58_error = value;
       fieldSetFlags()[5] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'pubkey_base58_error' field has been set.
-      * @return True if the 'pubkey_base58_error' field has been set, false otherwise.
+      * Checks whether the 'input_pubkey_base58_error' field has been set.
+      * @return True if the 'input_pubkey_base58_error' field has been set, false otherwise.
       */
-    public boolean hasPubkeyBase58Error() {
+    public boolean hasInputPubkeyBase58Error() {
       return fieldSetFlags()[5];
     }
 
 
     /**
-      * Clears the value of the 'pubkey_base58_error' field.
+      * Clears the value of the 'input_pubkey_base58_error' field.
       * @return This builder.
       */
-    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearPubkeyBase58Error() {
-      pubkey_base58_error = null;
+    public com.google.blockToBq.generated.AvroBitcoinInput.Builder clearInputPubkeyBase58Error() {
+      input_pubkey_base58_error = null;
       fieldSetFlags()[5] = false;
       return this;
     }
@@ -553,12 +553,12 @@ public class AvroBitcoinInput extends org.apache.avro.specific.SpecificRecordBas
     public AvroBitcoinInput build() {
       try {
         AvroBitcoinInput record = new AvroBitcoinInput();
-        record.script_bytes = fieldSetFlags()[0] ? this.script_bytes : (java.nio.ByteBuffer) defaultValue(fields()[0]);
-        record.script_string = fieldSetFlags()[1] ? this.script_string : (java.lang.CharSequence) defaultValue(fields()[1]);
-        record.script_string_error = fieldSetFlags()[2] ? this.script_string_error : (java.lang.CharSequence) defaultValue(fields()[2]);
-        record.sequence_number = fieldSetFlags()[3] ? this.sequence_number : (java.lang.Long) defaultValue(fields()[3]);
-        record.pubkey_base58 = fieldSetFlags()[4] ? this.pubkey_base58 : (java.lang.CharSequence) defaultValue(fields()[4]);
-        record.pubkey_base58_error = fieldSetFlags()[5] ? this.pubkey_base58_error : (java.lang.CharSequence) defaultValue(fields()[5]);
+        record.input_script_bytes = fieldSetFlags()[0] ? this.input_script_bytes : (java.nio.ByteBuffer) defaultValue(fields()[0]);
+        record.input_script_string = fieldSetFlags()[1] ? this.input_script_string : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.input_script_string_error = fieldSetFlags()[2] ? this.input_script_string_error : (java.lang.CharSequence) defaultValue(fields()[2]);
+        record.input_sequence_number = fieldSetFlags()[3] ? this.input_sequence_number : (java.lang.Long) defaultValue(fields()[3]);
+        record.input_pubkey_base58 = fieldSetFlags()[4] ? this.input_pubkey_base58 : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.input_pubkey_base58_error = fieldSetFlags()[5] ? this.input_pubkey_base58_error : (java.lang.CharSequence) defaultValue(fields()[5]);
         return record;
       } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

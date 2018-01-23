@@ -3,12 +3,12 @@
   "type": "record",
   "name": "AvroBitcoinInput",
   "fields": [
-    {"name": "script_bytes", "type": "bytes"},
-    {"name": "script_string", "type": ["null", "string"], "default": null},
-    {"name": "script_string_error", "type": ["null", "string"], "default": null},
-    {"name": "sequence_number", "type": "long"},
-    {"name": "pubkey_base58", "type": ["null", "string"], "default": null},
-    {"name": "pubkey_base58_error", "type": ["null", "string"], "default": null}
+    {"name": "input_script_bytes", "type": "bytes"},
+    {"name": "input_script_string", "type": ["null", "string"], "default": null},
+    {"name": "input_script_string_error", "type": ["null", "string"], "default": null},
+    {"name": "input_sequence_number", "type": "long"},
+    {"name": "input_pubkey_base58", "type": ["null", "string"], "default": null},
+    {"name": "input_pubkey_base58_error", "type": ["null", "string"], "default": null}
   ]
 },
 {
@@ -16,12 +16,12 @@
   "type": "record",
   "name": "AvroBitcoinOutput",
   "fields": [
-    {"name": "satoshis", "type": ["long", "null"]},
-    {"name": "script_bytes", "type": "bytes"},
-    {"name": "script_string", "type": ["null", "string"], "default": null},
-    {"name": "script_string_error", "type": ["null", "string"], "default": null},
-    {"name": "pubkey_base58", "type": ["null", "string"], "default": null},
-    {"name": "pubkey_base58_error", "type": ["null", "string"], "default": null}
+    {"name": "output_satoshis", "type": ["long", "null"]},
+    {"name": "output_script_bytes", "type": "bytes"},
+    {"name": "output_script_string", "type": ["null", "string"], "default": null},
+    {"name": "output_script_string_error", "type": ["null", "string"], "default": null},
+    {"name": "output_pubkey_base58", "type": ["null", "string"], "default": null},
+    {"name": "output_pubkey_base58_error", "type": ["null", "string"], "default": null}
   ]
 }, {
   "namespace": "com.google.blockToBq.generated",

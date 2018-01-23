@@ -108,27 +108,27 @@ public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener
 
   public static AvroBitcoinInput convertInputToAvro(TransactionInput input) {
     AvroBitcoinInput.Builder builder = AvroBitcoinInput.newBuilder()
-        .setScriptBytes(ByteBuffer.wrap(input.getScriptBytes()))
-        .setSequenceNumber(input.getSequenceNumber());
+        .setInputScriptBytes(ByteBuffer.wrap(input.getScriptBytes()))
+        .setInputSequenceNumber(input.getSequenceNumber());
 
     // Parse script string
     try {
-      builder.setScriptString(input.getScriptSig().toString());
+      builder.setInputScriptString(input.getScriptSig().toString());
     } catch (ScriptException e) {
-      builder.setScriptString(null);
-      builder.setScriptStringError(e.getMessage());
+      builder.setInputScriptString(null);
+      builder.setInputScriptStringError(e.getMessage());
     }
 
     // Parse input address
     if (input.isCoinBase()) {
-      builder.setPubkeyBase58("");
+      builder.setInputPubkeyBase58("");
     } else {
 
       try {
-        builder.setPubkeyBase58(input.getFromAddress().toBase58());
+        builder.setInputPubkeyBase58(input.getFromAddress().toBase58());
       } catch (ScriptException e) {
-        builder.setPubkeyBase58(null);
-        builder.setPubkeyBase58Error(e.getMessage());
+        builder.setInputPubkeyBase58(null);
+        builder.setInputPubkeyBase58Error(e.getMessage());
       }
     }
 
@@ -137,29 +137,29 @@ public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener
 
   public static AvroBitcoinOutput convertOutputToAvro(TransactionOutput output) {
     AvroBitcoinOutput.Builder builder = AvroBitcoinOutput.newBuilder()
-        .setScriptBytes(ByteBuffer.wrap(output.getScriptBytes()));
+        .setOutputScriptBytes(ByteBuffer.wrap(output.getScriptBytes()));
 
     // parse out satoshis
     if (output.getValue() != null) {
-      builder.setSatoshis(output.getValue().getValue());
+      builder.setOutputSatoshis(output.getValue().getValue());
     } else {
-      builder.setSatoshis(null);
+      builder.setOutputSatoshis(null);
     }
 
     // parse script string
     try {
-      builder.setScriptString(output.getScriptPubKey().toString());
+      builder.setOutputScriptString(output.getScriptPubKey().toString());
     } catch (ScriptException e) {
-      builder.setScriptString(null);
-      builder.setScriptStringError(e.getMessage());
+      builder.setOutputScriptString(null);
+      builder.setOutputScriptStringError(e.getMessage());
     }
 
     // parse pubkey
     try {
-      builder.setPubkeyBase58(output.getScriptPubKey().getToAddress(MainNetParams.get()).toBase58());
+      builder.setOutputPubkeyBase58(output.getScriptPubKey().getToAddress(MainNetParams.get()).toBase58());
     } catch (ScriptException e) {
-      builder.setPubkeyBase58(null);
-      builder.setPubkeyBase58Error(e.getMessage());
+      builder.setOutputPubkeyBase58(null);
+      builder.setOutputPubkeyBase58Error(e.getMessage());
     }
 
     return builder.build();
