@@ -21,14 +21,13 @@ import org.slf4j.LoggerFactory;
 
 public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener {
   public final int WRITE_RETRIES = 3;
-  private AvroGcsWriter writer;
+  private AvroWriter writer;
   private ExecutorService executor;
   private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-  public BitcoinBlockHandler(AvroGcsWriter writer, Integer numWorkers) {
+  public BitcoinBlockHandler(AvroWriter writer, Integer numWorkers) {
     log.info("Starting threadpool to handle block downloads with " + numWorkers + " workers");
     this.executor = Executors.newFixedThreadPool(numWorkers);
-
     this.writer = writer;
   }
 

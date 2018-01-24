@@ -11,16 +11,20 @@ import java.util.Date;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.specific.SpecificDatumWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class AvroGcsWriter {
+public class AvroWriter {
   private String workDirectory;
   private int rotationTime;
   private Callback callback;
   private File file;
   private int timeWindowId;
   private DataFileWriter<AvroBitcoinBlock> writer;
+  private static final Logger log = LoggerFactory.getLogger(AvroWriter.class);
 
-  public AvroGcsWriter(String workDirectory, Integer rotationTime, Callback callback) throws IOException {
+
+  public AvroWriter(String workDirectory, Integer rotationTime, Callback callback) throws IOException {
     this.workDirectory = workDirectory;
     this.rotationTime = rotationTime;
     if (this.workDirectory.endsWith("/")) {
@@ -44,6 +48,8 @@ public class AvroGcsWriter {
 
   /** Rotates the open file. */
   public synchronized void rotate() throws IOException {
+    log.info("AvroWriter.rotate: rotating disk file");
+
     // Close old file & sent event to callback
     this.close();
 
@@ -51,12 +57,12 @@ public class AvroGcsWriter {
     DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.ss");
     String path = this.workDirectory + "/" + dateFormat.format(new Date()) + ".avro";
     this.file = new File(path);
+    this.file.getParentFile().mkdirs();
 
     // Create writer for file
     DatumWriter<AvroBitcoinBlock> blockWriter = new SpecificDatumWriter<>(AvroBitcoinBlock.class);
-    DataFileWriter<AvroBitcoinBlock> writer = new DataFileWriter<>(blockWriter).create(AvroBitcoinBlock.getClassSchema(), file);
-    writer.create(AvroBitcoinBlock.getClassSchema(), file);
-    this.writer = writer;
+    this.writer = new DataFileWriter<>(blockWriter)
+        .create(AvroBitcoinBlock.getClassSchema(), file);
 
     // update time window id
     this.timeWindowId = getCurrentTimeWindowId();
@@ -64,13 +70,11 @@ public class AvroGcsWriter {
 
   /** Closes any open files. */
   public synchronized void close() throws IOException {
+    log.info("AvroWriter.close closing disk file");
+
     if (writer != null) {
       this.writer.close();
-      final String absPath = file.getAbsolutePath();
-      Thread thread = new Thread(() -> {
-        callback.callback(absPath);
-      });
-      thread.start();
+      callback.callback(file.getAbsolutePath());
     }
   }
 
