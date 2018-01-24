@@ -19,23 +19,24 @@
     <avro.version>1.8.2</avro.version>
     <google-cloud-storage.version>1.14.0</google-cloud-storage.version>
     <google-cloud-pubsub.version>0.32.0-beta</google-cloud-pubsub.version>
-    <google-cloud-logging.version>1.14.0</google-cloud-logging.version>
+    <google-cloud-logging-logback.version>0.32.0-alpha</google-cloud-logging-logback.version>
     <google-cloud-bigquery.version>0.32.0-beta</google-cloud-bigquery.version>
+    <guava.version>23.6-jre</guava.version>
     <protobuf.version>3.4.0</protobuf.version>
     <cli.version>1.4</cli.version>
   </properties>
 
   <dependencies>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.bitcoinj</groupId>
       <artifactId>bitcoinj-core</artifactId>
       <version>${bitcoinj.version}</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.20</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -70,8 +71,8 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-logging</artifactId>
-      <version>${google-cloud-logging.version}</version>
+      <artifactId>google-cloud-logging-logback</artifactId>
+      <version>${google-cloud-logging-logback.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
