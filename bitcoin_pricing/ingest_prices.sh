@@ -28,11 +28,8 @@ function ingest() {
   echo -e "${lightblue}Downloading ${dl_path}${nc}"
   wget "$ROOT_API/$exchange.csv.gz" -O $dl_path
 
-  #echo -e "${lightblue}Extracting csv${nc}"
-  #gzip --stdout -d -k $dl_path > "$SAVE_DIR/$exchange.csv"
-
   echo -e "${lightblue}Uploading ${dl_path} to BQ${nc}"
-  bq --project_id=$BQ_PROJECT load "${BQ_DATASET}.${exchange}" $dl_path "$BQ_SCHEMA"
+  bq --project_id=$BQ_PROJECT load --replace=true "${BQ_DATASET}.${exchange}" $dl_path "$BQ_SCHEMA"
 
   echo -e "${lightblue}Cleaning up${nc}"
   rm $dl_path
