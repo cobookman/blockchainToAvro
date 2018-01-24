@@ -54,7 +54,7 @@ public class AvroWriter {
     this.close();
 
     // Open up new file
-    DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.ss");
+    DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
     String path = this.workDirectory + "/" + dateFormat.format(new Date()) + ".avro";
     this.file = new File(path);
     this.file.getParentFile().mkdirs();
