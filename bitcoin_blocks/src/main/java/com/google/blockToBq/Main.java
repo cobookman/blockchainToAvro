@@ -235,6 +235,7 @@ public class Main {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       try {
         shutdown();
+        System.exit(0);
       } catch (Exception e) {
         e.printStackTrace();
       }

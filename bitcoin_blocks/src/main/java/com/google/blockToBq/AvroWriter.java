@@ -43,7 +43,9 @@ public class AvroWriter {
   }
 
   public int getCurrentTimeWindowId() {
-    return (Calendar.getInstance().get(Calendar.SECOND) / rotationTime);
+    Calendar instance = Calendar.getInstance();
+    long seconds = instance.getTimeInMillis() / 1000;
+    return (int) seconds / rotationTime;
   }
 
   /** Rotates the open file. */
