@@ -5,6 +5,7 @@ import com.google.cloud.bigquery.Field.Mode;
 import com.google.cloud.bigquery.FieldList;
 import com.google.cloud.bigquery.LegacySQLTypeName;
 import com.google.cloud.bigquery.Schema;
+import com.google.cloud.bigquery.StandardSQLTypeName;
 
 public class BigquerySchema {
 
@@ -48,12 +49,21 @@ public class BigquerySchema {
         Field.newBuilder("block_id", LegacySQLTypeName.STRING).build(),
         Field.newBuilder("previous_block", LegacySQLTypeName.STRING).build(),
         Field.newBuilder("merkle_root", LegacySQLTypeName.STRING).build(),
-        Field.newBuilder("timestamp", LegacySQLTypeName.TIMESTAMP).build(),
-        Field.newBuilder("difficulty", LegacySQLTypeName.INTEGER).build(),
+        Field.newBuilder("timestamp", LegacySQLTypeName.INTEGER).build(),
+        Field.newBuilder("difficultyTarget", LegacySQLTypeName.INTEGER)
+            .setDescription("Returns the difficulty of the proof of work that this block "
+                + "should meet encoded in compact form. The BlockChain verifies that this "
+                + "is not too easy by looking at the length of the chain when the block is "
+                + "added. To find the actual value the hash should be compared against, use "
+                + "getDifficultyTargetAsInteger(). Note that this is not the same as the "
+                + "difficulty value reported by the Bitcoin \"getdifficulty\" RPC that you "
+                + "may see on various block explorers. That number is the result of applying a "
+                + "formula to the underlying difficulty to normalize the minimum to 1. Calculating "
+                + "the difficulty that way is currently unsupported.").build(),
         Field.newBuilder("nonce", LegacySQLTypeName.INTEGER).build(),
         Field.newBuilder("version", LegacySQLTypeName.INTEGER).build(),
         Field.newBuilder("height", LegacySQLTypeName.INTEGER).build(),
-        Field.newBuilder("work", LegacySQLTypeName.INTEGER)
+        Field.newBuilder("work_terahash", LegacySQLTypeName.INTEGER)
             .setMode(Mode.NULLABLE).build(),
         Field.newBuilder("work_error", LegacySQLTypeName.STRING)
             .setMode(Mode.NULLABLE).build(),

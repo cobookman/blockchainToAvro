@@ -20,6 +20,9 @@
     <encoder>
       <pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>
     </encoder>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
   </appender>
 
   <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
@@ -37,7 +40,8 @@
     <flushLevel>WARN</flushLevel> <!-- Optional : default ERROR -->
   </appender>
 
-  <root level="info">
+  <logger name="org.bitcoinj" level="ERROR" />
+  <root level="DEBUG">
     <appender-ref ref="CLOUD" />
     <appender-ref ref="STDOUT" />
   </root>
