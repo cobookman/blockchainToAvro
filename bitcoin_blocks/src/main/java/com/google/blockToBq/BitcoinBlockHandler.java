@@ -4,6 +4,8 @@ import com.google.blockToBq.generated.AvroBitcoinBlock;
 import com.google.blockToBq.generated.AvroBitcoinInput;
 import com.google.blockToBq.generated.AvroBitcoinOutput;
 import com.google.blockToBq.generated.AvroBitcoinTransaction;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -24,6 +26,8 @@ public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener
   private AvroWriter writer;
   private ExecutorService executor;
   private static final Logger log = LoggerFactory.getLogger(Main.class);
+  private static final BigInteger teraHashUnit = new BigDecimal("10.0E+10").toBigIntegerExact();
+
 
   public BitcoinBlockHandler(AvroWriter writer, Integer numWorkers) {
     log.info("Starting threadpool to handle block downloads with " + numWorkers + " workers");
@@ -61,20 +65,22 @@ public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener
 
   /** Converts a Bitcoinj Block to Avro representation. */
   public static AvroBitcoinBlock convertBlockToAvro(long blockHeight, Block block) {
+
     AvroBitcoinBlock.Builder blockBuilder = AvroBitcoinBlock.newBuilder()
         .setBlockId(block.getHashAsString())
         .setPreviousBlock(block.getPrevBlockHash().toString())
         .setMerkleRoot(block.getMerkleRoot().toString())
         .setTimestamp(block.getTime().getTime())
-        .setDifficulty(block.getDifficultyTarget())
+        .setDifficultyTarget(block.getDifficultyTarget())
         .setNonce(block.getNonce())
         .setVersion(block.getVersion())
         .setHeight(blockHeight);
 
     try {
-      blockBuilder.setWork(block.getWork().longValueExact());
+      BigInteger workTeraHash = block.getWork().divide(teraHashUnit);
+      blockBuilder.setWorkTerahash(workTeraHash.longValueExact());
     } catch (ArithmeticException e) {
-      blockBuilder.setWork(null);
+      blockBuilder.setWorkTerahash(null);
       blockBuilder.setWorkError(e.getMessage());
     }
 

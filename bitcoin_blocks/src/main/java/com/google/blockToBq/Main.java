@@ -1,6 +1,7 @@
 package com.google.blockToBq;
 
 import com.google.blockToBq.AvroWriter.Callback;
+import com.google.cloud.WriteChannel;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Dataset;
@@ -15,9 +16,12 @@ import com.google.cloud.storage.Acl.User;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -178,9 +182,8 @@ public class Main {
     }
 
     private void doWork(String filepath) {
-      log.info("Starting callback");
-
       String filename = Paths.get(filepath).getFileName().toString();
+      log.info("OnFileRotation.callback: " + filename + " Starting callback for file");
       // upload to GCS
       BlobInfo blobInfo = BlobInfo
           .newBuilder(bucket, filename)
@@ -188,43 +191,50 @@ public class Main {
           .build();
 
       // Upload to GCS
+      log.info("OnFileRotation.callback: " + filename + " uploading to gcs");
       try (FileInputStream is = new FileInputStream(new File(filepath))) {
-        storage.create(blobInfo, is);
-        log.info("OnFileRotation.callback: uploaded to gcs successfully " + filepath);
+        ReadableByteChannel readChannel = Channels.newChannel(is);
+        WriteChannel writeChannel = storage.writer(blobInfo);
+        ByteStreams.copy(readChannel, writeChannel);
+        writeChannel.close();
+        readChannel.close();
+
+        log.info("OnFileRotation.callback: " + filename + " uploaded to gcs successfully");
 
       } catch (IOException e) {
-        log.error("OnFileRotation.callback: upload to gcs " + e + filepath);
+        log.error("OnFileRotation.callback: " + filename + "upload to gcs " + e);
         return;
       }
 
       // Ingest to BQ
       String gcsPath = String.format("gs://%s/%s", bucket, filename);
-      log.info("OnFileRotation.callback: ingestion to bq of " + gcsPath);
+      log.info("OnFileRotation.callback: " + filename + " ingestion to bq of " + gcsPath);
       Job loadJob = table.load(FormatOptions.avro(), gcsPath);
       try {
         loadJob.waitFor();
         if (loadJob.getStatus().getError() != null) {
+          log.error("OnFileRotation.callback: " + filename + " error data to bq: " + loadJob.getStatus().getError());
           throw new RuntimeException(loadJob.getStatus().getError().getMessage());
         } else {
-          log.info("OnFileRotation.callback: uploaded to bq successfully " + filepath);
+          log.info("OnFileRotation.callback: " + filename + " uploaded to bq successfully " + gcsPath);
         }
 
       } catch (InterruptedException e) {
-        log.error("OnFileRotation.callback: bq ingest gcs " + e + filepath);
+        log.error("OnFileRotation.callback: " + filename + " bq ingest gcs error (InterruptedException): " + e + " " + gcsPath);
         return;
 
       } catch (RuntimeException e) {
-        log.error("OnFileRotation.callback: bq ingest gcs " + e + filepath);
+        log.error("OnFileRotation.callback: " + filename + " bq ingest gcs (RuntimeException): " + e + " " + gcsPath);
         return;
       }
 
       // Delete File as now done
       try {
         Files.delete(Paths.get(filepath));
-        log.info("OnFileRotation.callback: cleaned up successfully " + filepath);
+        log.info("OnFileRotation.callback: " + filename + " cleaned up successfully ");
 
       } catch (IOException e) {
-        log.error("OnFileRotation.callback: cleanup file " + e + filepath);
+        log.error("OnFileRotation.callback: " + filename + " cleanup file " + e);
         return;
       }
     }
@@ -234,9 +244,12 @@ public class Main {
   private static void attachShutdownListener() {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       try {
+        log.info("Shutting down");
         shutdown();
+        log.info("Fini!");
         System.exit(0);
       } catch (Exception e) {
+        log.error("Error shutting down: " + e.getStackTrace().toString());
         e.printStackTrace();
       }
     }));
