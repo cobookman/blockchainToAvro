@@ -41,6 +41,7 @@
   </appender>
 
   <logger name="org.bitcoinj" level="ERROR" />
+
   <root level="DEBUG">
     <appender-ref ref="CLOUD" />
     <appender-ref ref="STDOUT" />

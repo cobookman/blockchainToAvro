@@ -49,12 +49,12 @@ public class BitcoinBlockDownloader {
       peerGroup.stop();
       peerGroup = null;
     }
-    isDone.set(false);
   }
 
   /** Starts the process of downloading the latest blocks stored in the blockchain. */
   public void start(NetworkParameters networkParameters, BlockListener blockListener) throws BlockStoreException {
     stop();
+    isDone.set(false);
 
     // Connect to Bitcoin MainNet
     Context.getOrCreate(networkParameters);
@@ -76,8 +76,7 @@ public class BitcoinBlockDownloader {
     // attach listener for newly downloaded blockchain blocks
     peerGroup.addBlocksDownloadedEventListener((Peer peer, Block block,
         @Nullable FilteredBlock filteredBlock, int i) -> {
-      long blockHeight = peer.getBestHeight() - i;
-      blockListener.onBlock(blockHeight, block);
+      blockListener.onBlock(block);
     });
 
     // download the chain
@@ -92,7 +91,7 @@ public class BitcoinBlockDownloader {
 
   /** Interface for callback used in {@link #start(NetworkParameters, BlockListener)}. */
   public interface BlockListener {
-    void onBlock(long blockHeight, Block block);
+    void onBlock(Block block);
   }
 
   /** Informs you if blockchain download is finished. */

@@ -62,7 +62,6 @@ public class BigquerySchema {
                 + "the difficulty that way is currently unsupported.").build(),
         Field.newBuilder("nonce", LegacySQLTypeName.INTEGER).build(),
         Field.newBuilder("version", LegacySQLTypeName.INTEGER).build(),
-        Field.newBuilder("height", LegacySQLTypeName.INTEGER).build(),
         Field.newBuilder("work_terahash", LegacySQLTypeName.INTEGER)
             .setMode(Mode.NULLABLE).build(),
         Field.newBuilder("work_error", LegacySQLTypeName.STRING)
