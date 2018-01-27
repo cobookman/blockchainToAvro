@@ -1,15 +1,24 @@
 package com.google.blockToBq;
 
+import com.google.blockToBq.AvroWriter.Callback;
 import com.google.blockToBq.generated.AvroBitcoinBlock;
 import com.google.blockToBq.generated.AvroBitcoinInput;
 import com.google.blockToBq.generated.AvroBitcoinOutput;
 import com.google.blockToBq.generated.AvroBitcoinTransaction;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.bitcoinj.core.Block;
@@ -20,29 +29,37 @@ import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.params.MainNetParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.nio.ch.ThreadPool;
 
 public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener {
   public final int WRITE_RETRIES = 3;
   private AvroWriter writer;
-  private ExecutorService executor;
+  private ThreadPoolExecutor executor;
   private static final Logger log = LoggerFactory.getLogger(Main.class);
   private static final BigInteger teraHashUnit = new BigDecimal("10.0E+10").toBigIntegerExact();
 
 
-  public BitcoinBlockHandler(AvroWriter writer, Integer numWorkers) {
-    log.info("Starting threadpool to handle block downloads with " + numWorkers + " workers");
-    this.executor = Executors.newFixedThreadPool(numWorkers);
+  public BitcoinBlockHandler(AvroWriter writer, Integer maxWorkers) {
+    log.info("Starting threadpool to handle block downloads with " + maxWorkers + " workers");
+    this.executor = new ThreadPoolExecutor(
+        1, maxWorkers, 500L,
+        TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     this.writer = writer;
   }
 
+  /** Gets number of pending tasks. */
+  public int getQueueSize() {
+    return this.executor.getQueue().size();
+  }
+
   /** Called whenver a new block is downloaded. */
-  public void onBlock(long blockHeight, Block block) {
-    executor.execute(() -> processBlock(blockHeight, block));
+  public void onBlock(Block block) {
+    executor.execute(() -> processBlock(block));
   }
 
   /** Handles the processing of new blocks. */
-  private void processBlock(long blockHeight, Block block) {
-    AvroBitcoinBlock avroBlock = convertBlockToAvro(blockHeight, block);
+  private void processBlock(Block block) {
+    AvroBitcoinBlock avroBlock = convertBlockToAvro(block);
 
     Exception exception = null;
     for (int i = 0; i < WRITE_RETRIES; ++i) {
@@ -64,7 +81,7 @@ public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener
   }
 
   /** Converts a Bitcoinj Block to Avro representation. */
-  public static AvroBitcoinBlock convertBlockToAvro(long blockHeight, Block block) {
+  public static AvroBitcoinBlock convertBlockToAvro(Block block) {
 
     AvroBitcoinBlock.Builder blockBuilder = AvroBitcoinBlock.newBuilder()
         .setBlockId(block.getHashAsString())
@@ -73,8 +90,7 @@ public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener
         .setTimestamp(block.getTime().getTime())
         .setDifficultyTarget(block.getDifficultyTarget())
         .setNonce(block.getNonce())
-        .setVersion(block.getVersion())
-        .setHeight(blockHeight);
+        .setVersion(block.getVersion());
 
     try {
       BigInteger workTeraHash = block.getWork().divide(teraHashUnit);

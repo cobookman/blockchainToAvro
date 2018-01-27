@@ -72,11 +72,12 @@ public class AvroWriter {
 
   /** Closes any open files. */
   public synchronized void close() throws IOException {
-    log.info("AvroWriter.close closing disk file");
-
     if (writer != null) {
+      log.info("AvroWriter.close closing disk file: " + file.getAbsolutePath());
       this.writer.close();
       callback.callback(file.getAbsolutePath());
+    } else {
+      log.info("avroWriter.close not closing file as no writer");
     }
   }
 

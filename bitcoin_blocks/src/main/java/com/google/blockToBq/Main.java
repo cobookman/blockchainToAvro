@@ -26,8 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -103,11 +103,11 @@ public class Main {
     }
 
     attachShutdownListener();
-    sync(cmd);
+    setup(cmd);
   }
 
   /** Resync to latest bitcoin block. */
-  private static void sync(CommandLine cmd)
+  private static void setup(CommandLine cmd)
       throws IOException, InterruptedException, BlockStoreException {
     NetworkParameters networkParameters = new MainNetParams();
 
@@ -149,7 +149,9 @@ public class Main {
     log.info("startup: Starting Blockchain Download");
     bitcoinBlockDownloader.start(networkParameters, bitcoinBlockHandler);
     while (!bitcoinBlockDownloader.isDone()) {
-      Thread.sleep(1000);
+      Thread.sleep(5000);
+      System.out.println("OnFileRotation QueueSize: " + onFileRotation.getQueueSize()
+          + "\tBitcoinBlockHandler QueueSize: " + bitcoinBlockHandler.getQueueSize());
     }
 
     log.info("startup: Done downloading. Pausing for a bit to cleanup and finish any remaining work");
@@ -162,17 +164,23 @@ public class Main {
     private Storage storage;
     private String bucket;
     private Table table;
-    private ExecutorService executor;
+    private ThreadPoolExecutor executor;
 
+    public int getQueueSize() {
+      return this.executor.getQueue().size();
+    }
     public OnFileRotation(Storage storage, String bucket, Table table) {
       this.storage = storage;
       this.bucket = bucket;
       this.table = table;
-      this.executor = Executors.newFixedThreadPool(8);
+      this.executor = new ThreadPoolExecutor(
+          1, 1, 0L,
+          TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     @Override
     public void callback(String filepath) {
+      log.info("OnFileRotation.callback submitting work executor");
       executor.execute(() -> doWork(filepath));
     }
 
@@ -182,6 +190,21 @@ public class Main {
     }
 
     private void doWork(String filepath) {
+      Exception exception = null;
+      for (int i = 0; i < 5; i++) {
+        try {
+          doWorkTry(filepath);
+          return;
+        } catch (Exception e) {
+          log.error("Error doing work on : " + filepath + " " + e.getMessage());
+          exception = e;
+        }
+      }
+
+      throw new RuntimeException(exception);
+    }
+
+    private void doWorkTry(String filepath) {
       String filename = Paths.get(filepath).getFileName().toString();
       log.info("OnFileRotation.callback: " + filename + " Starting callback for file");
       // upload to GCS
@@ -242,42 +265,45 @@ public class Main {
 
 
   private static void attachShutdownListener() {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      try {
-        log.info("Shutting down");
-        shutdown();
-        log.info("Fini!");
-        System.exit(0);
-      } catch (Exception e) {
-        log.error("Error shutting down: " + e.getStackTrace().toString());
-        e.printStackTrace();
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      public void run() {
+        try {
+          Main.teardown();
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        System.err.println("STOPPED");
+        System.err.flush();
+
+        // flush any logs
+        try {
+          Thread.sleep(50);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
       }
-    }));
+    });
   }
 
-  private static void shutdown() throws IOException, InterruptedException {
-    log.warn("shutting down");
+  private static void teardown() throws InterruptedException, IOException {
+    System.err.println("teardown() bitcoinBlockDownloader - stopping");
     if (bitcoinBlockDownloader != null) {
-      log.warn("download of blockchain:\tstopping");
       bitcoinBlockDownloader.stop();
-      log.warn("download of blockchain:\tstopped");
     }
+    System.err.println("teardown() bitcoinBlockDownloader - stopped");
 
+    System.err.println("teardown() bitcoinBlockHandler - stopping");
     if (bitcoinBlockHandler != null) {
-      log.warn("block queue:\tfinishing");
       bitcoinBlockHandler.stop();
-      log.warn("block queue:\tfinished");
     }
+    System.err.println("teardown() bitcoinBlockHandler - stopped");
 
+    System.err.println("teardown() writer - stopping");
     if (writer != null) {
-      log.warn("writer:\tstopping");
       writer.close();
-      log.warn("writer:\tstopped");
     }
-
-    log.warn("shutting down: Done");
-
-    // give logs some time to flush (no way to explictly flush :( ).
-    Thread.sleep(1000);
+    System.err.println("teardown() writer - stopped");
   }
 }

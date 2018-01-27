@@ -44,7 +44,6 @@
     {"name": "difficultyTarget", "type": "long"},
     {"name": "nonce", "type": "long"},
     {"name": "version", "type": "long"},
-    {"name": "height", "type": "long"},
     {"name": "work_terahash", "type": ["null", "long"], "default": null},
     {"name": "work_error", "type": ["null", "string"], "default": null},
     {"name": "transactions", "type": {"type": "array", "items": "AvroBitcoinTransaction"}}
