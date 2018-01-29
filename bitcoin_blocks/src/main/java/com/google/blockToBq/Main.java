@@ -1,6 +1,7 @@
 package com.google.blockToBq;
 
 import com.google.blockToBq.AvroWriter.Callback;
+import com.google.blockToBq.ThreadHelpers.ThreadPool;
 import com.google.cloud.WriteChannel;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
@@ -46,6 +47,7 @@ public class Main {
   private static AvroWriter writer;
   private static BitcoinBlockHandler bitcoinBlockHandler;
   private static BitcoinBlockDownloader bitcoinBlockDownloader;
+  private static OnFileRotation onFileRotation;
   private static final Logger log = LoggerFactory.getLogger(Main.class);
 
   public static void main(String[] args)
@@ -132,7 +134,7 @@ public class Main {
     }
 
     log.info("startup: Instantializing Writer");
-    OnFileRotation onFileRotation = new OnFileRotation(
+    onFileRotation = new OnFileRotation(
         storage,
         cmd.getOptionValue("bucket"),
         table);
@@ -148,23 +150,21 @@ public class Main {
 
     log.info("startup: Starting Blockchain Download");
     bitcoinBlockDownloader.start(networkParameters, bitcoinBlockHandler);
-    while (!bitcoinBlockDownloader.isDone()) {
+
+    // block forever
+    while (true) {
       Thread.sleep(5000);
       System.out.println("OnFileRotation QueueSize: " + onFileRotation.getQueueSize()
           + "\tBitcoinBlockHandler QueueSize: " + bitcoinBlockHandler.getQueueSize());
+      System.out.flush();
     }
-
-    log.info("startup: Done downloading. Pausing for a bit to cleanup and finish any remaining work");
-    onFileRotation.blockTillDone();
-    Thread.sleep(10000);
-    System.exit(0);
   }
 
   public static class OnFileRotation implements Callback {
     private Storage storage;
     private String bucket;
     private Table table;
-    private ThreadPoolExecutor executor;
+    private ThreadPool executor;
 
     public int getQueueSize() {
       return this.executor.getQueue().size();
@@ -173,20 +173,17 @@ public class Main {
       this.storage = storage;
       this.bucket = bucket;
       this.table = table;
-      this.executor = new ThreadPoolExecutor(
-          1, 1, 0L,
-          TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+      this.executor = new ThreadPool(1, 2, 0L, TimeUnit.MILLISECONDS);
+    }
+
+    public void stop() {
+      this.executor.stop();
     }
 
     @Override
     public void callback(String filepath) {
       log.info("OnFileRotation.callback submitting work executor");
       executor.execute(() -> doWork(filepath));
-    }
-
-    public void blockTillDone() throws InterruptedException {
-      executor.shutdown();
-      executor.awaitTermination(60, TimeUnit.SECONDS);
     }
 
     private void doWork(String filepath) {
@@ -305,5 +302,11 @@ public class Main {
       writer.close();
     }
     System.err.println("teardown() writer - stopped");
+
+    System.err.println("teardown() onFileRotation - stopping");
+    if (onFileRotation != null) {
+      onFileRotation.stop();
+    }
+    System.err.println("teardown() onFileRotation - stopped");
   }
 }
