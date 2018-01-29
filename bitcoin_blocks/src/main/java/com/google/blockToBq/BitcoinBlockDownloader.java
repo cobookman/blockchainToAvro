@@ -40,13 +40,21 @@ public class BitcoinBlockDownloader {
       this.dblocation += "/";
     }
     isDone = new AtomicBoolean(false);
-
   }
 
   /** Blocks until the download of the blockchain is stopped, and peers disconnected. */
   public void stop() {
     if (peerGroup != null) {
       peerGroup.stop();
+      // block if still running
+      while (peerGroup.isRunning()) {
+        System.out.println("Waiting for peer group to finish shutdown..");
+        try {
+          Thread.sleep(3000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
       peerGroup = null;
     }
   }

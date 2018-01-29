@@ -1,6 +1,7 @@
 package com.google.blockToBq;
 
 import com.google.blockToBq.AvroWriter.Callback;
+import com.google.blockToBq.ThreadHelpers.ThreadPool;
 import com.google.blockToBq.generated.AvroBitcoinBlock;
 import com.google.blockToBq.generated.AvroBitcoinInput;
 import com.google.blockToBq.generated.AvroBitcoinOutput;
@@ -29,21 +30,20 @@ import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.params.MainNetParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.nio.ch.ThreadPool;
 
 public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener {
   public final int WRITE_RETRIES = 3;
   private AvroWriter writer;
-  private ThreadPoolExecutor executor;
+  private ThreadPool executor;
   private static final Logger log = LoggerFactory.getLogger(Main.class);
   private static final BigInteger teraHashUnit = new BigDecimal("10.0E+10").toBigIntegerExact();
 
 
   public BitcoinBlockHandler(AvroWriter writer, Integer maxWorkers) {
     log.info("Starting threadpool to handle block downloads with " + maxWorkers + " workers");
-    this.executor = new ThreadPoolExecutor(
+    this.executor = new ThreadHelpers.ThreadPool(
         1, maxWorkers, 500L,
-        TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+        TimeUnit.MILLISECONDS);
     this.writer = writer;
   }
 
@@ -75,9 +75,8 @@ public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener
   }
 
   /** Stops accepting new blocks & flushes queue. **/
-  public void stop() throws InterruptedException {
-    executor.shutdown();
-    executor.awaitTermination(10, TimeUnit.SECONDS);
+  public void stop() {
+    executor.stop();
   }
 
   /** Converts a Bitcoinj Block to Avro representation. */
