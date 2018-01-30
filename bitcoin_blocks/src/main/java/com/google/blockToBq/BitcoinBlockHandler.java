@@ -65,6 +65,7 @@ public class BitcoinBlockHandler implements BitcoinBlockDownloader.BlockListener
     for (int i = 0; i < WRITE_RETRIES; ++i) {
       try {
         writer.write(avroBlock);
+        return;
       } catch (Exception e) {
         exception  = e;
       }
